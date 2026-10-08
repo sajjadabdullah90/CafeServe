@@ -1,9 +1,9 @@
 function Menu() {
   return (
-    <div>
+    <main className="page">
       <h1>Our Menu</h1>
       <p>Explore our delicious menu.</p>
-    </div>
+    </main>
   );
 }
 
