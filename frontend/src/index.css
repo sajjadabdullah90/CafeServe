@@ -612,3 +612,17 @@ input {
 .user-management-delete { padding: .5rem .65rem; border: 1px solid rgba(255,105,105,.24); border-radius: 9px; background: rgba(130,35,45,.12); color: #ffb4b4; font: inherit; font-size: .7rem; cursor: pointer; transition: background .18s ease, border-color .18s ease; }
 .user-management-delete:hover:not(:disabled) { border-color: rgba(255,105,105,.55); background: rgba(130,35,45,.25); }
 .user-management-delete:disabled { opacity: .4; cursor: not-allowed; }
+
+
+/* Account status controls */
+.user-management-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.user-management-controls { grid-template-columns: minmax(0, 1fr) 130px 140px; }
+.user-status-badge { padding: .3rem .5rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; font-size: .66rem; }
+.user-status-badge--active { border-color: rgba(99,205,163,.25); background: rgba(28,71,59,.18); color: #8be0bc; }
+.user-status-badge--disabled { border-color: rgba(255,153,115,.24); background: rgba(130,65,35,.14); color: #ffc09e; }
+.user-management-status-action { padding: .5rem .65rem; border: 1px solid rgba(99,205,163,.24); border-radius: 9px; background: rgba(28,71,59,.16); color: #a1e8c9; font: inherit; font-size: .7rem; cursor: pointer; }
+.user-management-status-action--disable { border-color: rgba(255,185,105,.24); background: rgba(130,85,35,.12); color: #ffd09a; }
+.user-management-status-action:hover:not(:disabled) { filter: brightness(1.15); }
+.user-management-status-action:disabled { opacity: .4; cursor: not-allowed; }
+@media (max-width: 980px) { .user-management-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .user-management-stats { grid-template-columns: 1fr; } .user-management-controls { grid-template-columns: 1fr; } }
