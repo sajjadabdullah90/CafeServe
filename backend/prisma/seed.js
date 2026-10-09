@@ -4,7 +4,7 @@ const categories = [
   { name: "Burgers", items: [
     { name: "Classic Smash Burger", description: "Double smashed beef, cheddar, pickles, and our house sauce.", price: "1290.00", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" },
     { name: "Crispy Chicken Burger", description: "Golden crispy chicken, fresh lettuce, and pepper mayo.", price: "1090.00", image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=85" },
-    { name: "Mushroom Swiss Burger", description: "Juicy beef patty topped with sautéed mushrooms, Swiss cheese, and creamy garlic sauce.", price: "1450.00", image: "https://images.unsplash.com/photo-1553979459-d2229ba7433a?auto=format&fit=crop&w=900&q=85" }
+    { name: "Spicy Jalapeño Burger", description: "A juicy beef patty with jalapeños, melted cheese, crisp lettuce, and spicy house sauce.", price: "1390.00", image: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=85" }
   ]},
   { name: "Pizza", items: [
     { name: "Margherita Pizza", description: "Tomato, mozzarella, basil, and a crisp stone-baked crust.", price: "1490.00", image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=85" },
@@ -25,7 +25,7 @@ async function main() {
 
   // Retire replaced demo items without deleting records referenced by past orders.
   await prisma.menuItem.updateMany({
-    where: { name: { in: ["BBQ Baconless Burger", "Iced Lemon Cooler"] } },
+    where: { name: { in: ["BBQ Baconless Burger", "Iced Lemon Cooler", "Mushroom Swiss Burger"] } },
     data: { available: false }
   });
   for (const group of categories) {
