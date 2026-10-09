@@ -37,7 +37,7 @@ function Login() {
           {error && <p className="auth-error" role="alert">{error}</p>}
           <button className="cart-primary-button cart-primary-button--full" type="submit" disabled={submitting}>{submitting ? "Signing in..." : "Sign in"} <span aria-hidden="true">→</span></button>
         </form>
-        <p className="auth-switch">New to CafeServe? <Link to="/register">Create an account</Link></p>
+        <p className="auth-switch">New to CafeServe? <Link to="/register" state={location.state}>Create an account</Link></p>
       </section>
       <aside className="auth-aside"><span>CAFE SERVE / YOUR TABLE AWAITS</span><div className="auth-aside__orb">✦</div><h2>Made fresh.<br />Made for you.</h2><p>Your next favourite is only a few clicks away.</p></aside>
     </main>
