@@ -39,7 +39,7 @@ function Login() {
         </form>
         <p className="auth-switch">New to CafeServe? <Link to="/register" state={location.state}>Create an account</Link></p>
       </section>
-      <aside className="auth-aside"><span>CAFE SERVE / YOUR TABLE AWAITS</span><div className="auth-aside__orb">✦</div><h2>Made fresh.<br />Made for you.</h2><p>Your next favourite is only a few clicks away.</p></aside>
+      <aside className="auth-aside"><span>CAFE SERVE / YOUR TABLE AWAITS</span><div className="auth-aside__orb" aria-hidden="true" /><h2>Made fresh.<br />Made for you.</h2><p>Your next favourite is only a few clicks away.</p></aside>
     </main>
   );
 }
