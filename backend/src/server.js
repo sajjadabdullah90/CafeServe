@@ -7,6 +7,7 @@ const orderRoutes = require("./routes/orders.routes");
 const uploadRoutes = require("./routes/uploads.routes");
 const adminMenuRoutes = require("./routes/admin-menu.routes");
 const adminRoutes = require("./routes/admin.routes");
+const usersRoutes = require("./routes/users.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +38,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/admin", uploadRoutes);
 app.use("/api/admin", adminMenuRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/admin/users", usersRoutes);
 
 app.listen(PORT, () => {
   console.log(`CafeServe backend running on http://localhost:${PORT}`);

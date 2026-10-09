@@ -22,6 +22,7 @@ function Navbar() {
           <>
             <Link to="/admin">Dashboard</Link>
             <Link to="/admin/menu">Menu Management</Link>
+            <Link to="/admin/users">User Management</Link>
             <Link to="/orders">Orders</Link>
           </>
         ) : (
@@ -36,27 +37,15 @@ function Navbar() {
       <div className="navbar__actions">
         {isAuthenticated ? (
           <>
-            <span className="navbar__welcome">
-              Hi, {user.name.split(" ")[0]}
-            </span>
-            <button
-              className="navbar__login navbar__logout"
-              type="button"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <span className="navbar__welcome">Hi, {user.name.split(" ")[0]}</span>
+            <button className="navbar__login navbar__logout" type="button" onClick={handleLogout}>Logout</button>
           </>
         ) : (
           <Link to="/login" className="navbar__login">Login</Link>
         )}
 
         {!isAdmin && (
-          <Link
-            to="/cart"
-            className="navbar__cart"
-            aria-label={`Shopping cart, ${itemCount} items`}
-          >
+          <Link to="/cart" className="navbar__cart" aria-label={`Shopping cart, ${itemCount} items`}>
             Cart <span className="navbar__cart-count">{itemCount}</span>
           </Link>
         )}

@@ -562,3 +562,48 @@ input {
 .menu-image-upload__preview > div { display: grid; min-width: 0; gap: .25rem; }
 .menu-image-upload__preview strong { overflow-wrap: anywhere; color: #ededf4; font-size: .82rem; }
 .menu-image-upload__preview button { width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.12); border-radius: 9px; background: rgba(255,255,255,.04); color: #f5b0b0; font-size: 1.2rem; cursor: pointer; }
+
+
+/* Admin user management */
+.user-management-page { width: min(1240px, 90%); margin: 0 auto; padding: 4.5rem 0 6rem; }
+.user-management-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+.user-management-intro > div { max-width: 760px; }
+.user-management-intro h1 { font-size: clamp(2.8rem, 6vw, 5rem); line-height: .98; letter-spacing: -.065em; }
+.user-management-intro h1 span { color: #9ca9d4; }
+.user-management-intro p { max-width: 640px; margin-top: 1.1rem; line-height: 1.7; color: #a2a6b4; }
+.user-management-back { flex-shrink: 0; padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; color: #d2d7eb; background: rgba(255,255,255,.04); font-size: .85rem; }
+.user-management-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .9rem; margin-bottom: 1.25rem; }
+.user-management-layout { display: grid; grid-template-columns: minmax(280px,.72fr) minmax(0,1.5fr); align-items: start; gap: 1.1rem; }
+.user-management-panel { min-width: 0; padding: 1.4rem; border: 1px solid rgba(255,255,255,.09); border-radius: 18px; background: linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018)); }
+.user-management-panel h2 { margin: 0 0 .55rem; font-size: 1.3rem; letter-spacing: -.03em; }
+.user-management-panel > p { margin-bottom: 1.2rem; font-size: .84rem; line-height: 1.6; }
+.user-management-form { display: grid; gap: 1rem; margin-top: 1.2rem; }
+.user-management-form label { display: grid; gap: .45rem; color: #e1e4ee; font-size: .82rem; font-weight: 600; }
+.user-management-form input,.user-management-form select,.user-management-controls input,.user-management-controls select,.user-management-role-label select { width: 100%; min-width: 0; padding: .8rem .85rem; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; outline: 0; background: #11141d; color: #f5f6ff; font: inherit; font-size: .82rem; }
+.user-management-form input:focus,.user-management-form select:focus,.user-management-controls input:focus,.user-management-controls select:focus,.user-management-role-label select:focus { border-color: rgba(145,166,239,.6); }
+.user-management-form small { color: #898fa0; font-size: .72rem; line-height: 1.5; font-weight: 400; }
+.user-management-form button { justify-self: start; border: 0; cursor: pointer; font: inherit; font-size: .85rem; }
+.user-management-form button:disabled { opacity: .6; cursor: wait; }
+.user-management-list-panel { min-width: 0; }
+.user-management-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.user-management-list-heading .menu-eyebrow { margin-bottom: .7rem; }
+.user-management-list-heading h2 span { display: inline-grid; min-width: 1.6rem; height: 1.6rem; place-items: center; margin-left: .25rem; padding: 0 .35rem; border-radius: 7px; background: rgba(145,166,239,.12); color: #c4ccef; font-size: .78rem; vertical-align: middle; }
+.user-management-controls { display: grid; grid-template-columns: minmax(0,1fr) 140px; gap: .65rem; margin: 1rem 0; }
+.user-management-list { display: grid; gap: .65rem; }
+.user-management-card { display: grid; grid-template-columns: 42px minmax(0,1fr) minmax(130px,.58fr); align-items: center; gap: .8rem; padding: .85rem; border: 1px solid rgba(255,255,255,.08); border-radius: 13px; background: rgba(9,11,17,.5); }
+.user-management-avatar { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(155,174,237,.25); border-radius: 13px; background: linear-gradient(145deg,#263253,#141927); color: #e1e7ff; font-weight: 700; }
+.user-management-card__identity { min-width: 0; }
+.user-management-card__identity h3 { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; font-size: .9rem; overflow-wrap: anywhere; }
+.user-management-card__identity p { margin-top: .25rem; color: #adb2c1; font-size: .78rem; overflow-wrap: anywhere; }
+.user-management-card__identity small { display: block; margin-top: .35rem; color: #7e8597; font-size: .68rem; }
+.user-management-you { padding: .15rem .35rem; border-radius: 4px; background: rgba(145,166,239,.14); color: #c4ccef; font-size: .58rem; letter-spacing: .08em; }
+.user-management-card__actions { display: grid; justify-items: start; gap: .45rem; }
+.user-role-badge { padding: .3rem .5rem; border: 1px solid rgba(255,255,255,.12); border-radius: 999px; color: #c4c8d4; background: rgba(255,255,255,.04); font-size: .66rem; }
+.user-role-badge--admin { border-color: rgba(142,164,235,.28); color: #c4ccef; background: rgba(77,99,164,.15); }
+.user-management-role-label { display: grid; width: 100%; gap: .25rem; color: #888fa0; font-size: .67rem; }
+.user-management-role-label select { padding: .55rem .6rem; font-size: .72rem; }
+.user-management-role-label select:disabled { opacity: .55; cursor: not-allowed; }
+.user-management-self-note { color: #848b9b; font-size: .65rem; line-height: 1.4; }
+.user-management-security-note { margin-top: 1.1rem; color: #777f91; font-size: .75rem; line-height: 1.6; }
+@media (max-width: 980px) { .user-management-layout { grid-template-columns: 1fr; } .user-management-intro { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 640px) { .user-management-page { padding-top: 3rem; } .user-management-stats { grid-template-columns: 1fr; } .user-management-card { grid-template-columns: 38px minmax(0,1fr); } .user-management-avatar { width: 38px; height: 38px; } .user-management-card__actions { grid-column: 2; grid-template-columns: auto minmax(120px,1fr); align-items: center; width: 100%; } .user-management-role-label { grid-column: 2; } .user-management-self-note { grid-column: 1 / -1; } .user-management-controls { grid-template-columns: 1fr; } .user-management-list-heading { align-items: flex-start; } }

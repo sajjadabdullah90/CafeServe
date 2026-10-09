@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const prisma = require("../config/prisma");
 
 const JWT_SECRET = process.env.JWT_SECRET || "cafeserve-local-development-secret-change-before-deploy";
 
@@ -18,11 +19,25 @@ function requireAuth(req, res, next) {
   }
 }
 
-function requireAdmin(req, res, next) {
-  if (req.user?.role !== "ADMIN") {
-    return res.status(403).json({ status: "error", message: "Admin access is required to perform this action." });
+// Verify the current database role instead of trusting a role claim that may be stale.
+async function requireAdmin(req, res, next) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user?.userId },
+      select: { id: true, role: true },
+    });
+    if (!user) {
+      return res.status(401).json({ status: "error", message: "Account not found. Please sign in again." });
+    }
+    req.user.role = user.role;
+    if (user.role !== "ADMIN") {
+      return res.status(403).json({ status: "error", message: "Admin access is required to perform this action." });
+    }
+    return next();
+  } catch (error) {
+    console.error("Failed to verify administrator role:", error);
+    return res.status(500).json({ status: "error", message: "Could not verify administrator access." });
   }
-  return next();
 }
 
 module.exports = { requireAuth, requireAdmin };
