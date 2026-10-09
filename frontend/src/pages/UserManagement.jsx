@@ -101,6 +101,36 @@ function UserManagement() {
     }
   }
 
+  async function deleteAccount(target) {
+    if (target.id === user?.id) {
+      setError("You cannot delete your own account.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Delete the " + (target.role === "ADMIN" ? "administrator" : "user") + " account for " + target.name + " (" + target.email + ")? This cannot be undone. Accounts with order history cannot be deleted."
+    );
+    if (!confirmed) return;
+
+    setUpdatingId(target.id);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch(API_URL + "/api/admin/users/" + target.id, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + token },
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Could not delete account.");
+      setUsers((current) => current.filter((item) => item.id !== target.id));
+      setNotice(result.message || "Account deleted successfully.");
+    } catch (err) {
+      setError(err.message || "Could not delete account.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: "/admin/users" }} />;
   if (user?.role !== "ADMIN") return <main className="user-management-page"><section className="admin-empty"><span className="menu-eyebrow">RESTRICTED AREA</span><h1>Admin access <span>required.</span></h1><p>Only CafeServe administrators can manage user accounts.</p><Link className="cart-primary-button" to="/">Return home</Link></section></main>;
 
@@ -152,6 +182,9 @@ function UserManagement() {
                   <div className="user-management-card__actions"><span className={item.role === "ADMIN" ? "user-role-badge user-role-badge--admin" : "user-role-badge"}>{item.role === "ADMIN" ? "Administrator" : "Customer"}</span>
                     <label className="user-management-role-label">Change role<select value={item.role} disabled={updatingId === item.id || item.id === user.id} onChange={(event) => changeRole(item, event.target.value)} aria-label={`Change role for ${item.name}`}><option value="CUSTOMER">Customer</option><option value="ADMIN">Administrator</option></select></label>
                     {item.id === user.id && <small className="user-management-self-note">Your own role is locked here.</small>}
+                    <button className="user-management-delete" type="button" disabled={updatingId === item.id || item.id === user.id} onClick={() => deleteAccount(item)}>
+                      {updatingId === item.id ? "Working…" : "Delete account"}
+                    </button>
                   </div>
                 </article>
               ))}</div>}
