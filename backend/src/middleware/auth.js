@@ -13,6 +13,11 @@ async function requireAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, JWT_SECRET);
+  } catch {
+    return res.status(401).json({ status: "error", message: "Your session is invalid or has expired. Please sign in again." });
+  }
+
+  try {
     const currentUser = await prisma.user.findUnique({
       where: { id: req.user.userId },
       select: { id: true, isActive: true },
@@ -24,8 +29,9 @@ async function requireAuth(req, res, next) {
       return res.status(403).json({ status: "error", message: "This account has been disabled. Contact CafeServe support." });
     }
     return next();
-  } catch {
-    return res.status(401).json({ status: "error", message: "Your session is invalid or has expired. Please sign in again." });
+  } catch (error) {
+    console.error("Failed to verify account status:", error);
+    return res.status(500).json({ status: "error", message: "Could not verify your account status. Please try again." });
   }
 }
 
