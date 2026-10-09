@@ -14,12 +14,21 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-// Allow the local Vite frontend to call the API during development.
+// Allow local development origins and the deployed frontend origin(s).
+// FRONTEND_URL may contain one origin or a comma-separated list of origins.
 app.use((req, res, next) => {
-  const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+  const configuredOrigins = (process.env.FRONTEND_URL || "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    ...configuredOrigins,
+  ];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (origin && allowedOrigins.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
