@@ -4,7 +4,7 @@ const prisma = require("../config/prisma");
 const VALID_ROLES = ["CUSTOMER", "ADMIN"];
 
 function safeUserSelect() {
-  return { id: true, name: true, email: true, role: true, phone: true, deliveryAddress: true, createdAt: true };
+  return { id: true, name: true, email: true, role: true, isActive: true, phone: true, deliveryAddress: true, createdAt: true };
 }
 
 function validateAccount(body) {
@@ -81,7 +81,7 @@ async function updateUserRole(req, res) {
     if (!target) return res.status(404).json({ status: "error", message: "User not found." });
 
     if (target.role === "ADMIN" && role === "CUSTOMER") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
+      const adminCount = await prisma.user.count({ where: { role: "ADMIN", isActive: true } });
       if (adminCount <= 1) {
         return res.status(409).json({ status: "error", message: "CafeServe must keep at least one administrator." });
       }
@@ -96,6 +96,56 @@ async function updateUserRole(req, res) {
   } catch (error) {
     console.error("Failed to update user role:", error);
     return res.status(500).json({ status: "error", message: "Could not update this user's role." });
+  }
+}
+
+
+async function updateUserStatus(req, res) {
+  const id = Number(req.params.id);
+  const isActive = req.body?.isActive;
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ status: "error", message: "Invalid user ID." });
+  }
+  if (typeof isActive !== "boolean") {
+    return res.status(400).json({ status: "error", message: "Account status must be true (active) or false (disabled)." });
+  }
+  if (id === req.user.userId && !isActive) {
+    return res.status(400).json({ status: "error", message: "You cannot disable your own account." });
+  }
+
+  try {
+    const target = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, name: true, role: true, isActive: true },
+    });
+    if (!target) return res.status(404).json({ status: "error", message: "User not found." });
+
+    if (target.role === "ADMIN" && target.isActive && !isActive) {
+      const activeAdminCount = await prisma.user.count({
+        where: { role: "ADMIN", isActive: true },
+      });
+      if (activeAdminCount <= 1) {
+        return res.status(409).json({
+          status: "error",
+          message: "You cannot disable the last active administrator. CafeServe must keep at least one active admin.",
+        });
+      }
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { isActive },
+      select: safeUserSelect(),
+    });
+    return res.json({
+      status: "success",
+      message: isActive ? "Account reactivated successfully." : "Account disabled. Existing order history has been preserved.",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Failed to update user status:", error);
+    return res.status(500).json({ status: "error", message: "Could not update this account's status." });
   }
 }
 
@@ -126,7 +176,7 @@ async function deleteUser(req, res) {
     if (target._count.orders > 0) {
       return res.status(409).json({
         status: "error",
-        message: `This account has ${target._count.orders} order(s). It cannot be deleted because CafeServe preserves order history. Change the user's role if access needs to be restricted.`,
+        message: `This account has ${target._count.orders} order(s), so it cannot be deleted. Use Disable Account to block access while preserving order history.`,
       });
     }
 
@@ -138,4 +188,4 @@ async function deleteUser(req, res) {
   }
 }
 
-module.exports = { listUsers, createUser, updateUserRole, deleteUser };
+module.exports = { listUsers, createUser, updateUserRole, updateUserStatus, deleteUser };
