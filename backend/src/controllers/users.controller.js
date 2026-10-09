@@ -80,7 +80,7 @@ async function updateUserRole(req, res) {
     const target = await prisma.user.findUnique({ where: { id }, select: { id: true, role: true } });
     if (!target) return res.status(404).json({ status: "error", message: "User not found." });
 
-    if (target.role === "ADMIN" && role === "CUSTOMER") {
+    if (target.role === "ADMIN" && target.isActive && role === "CUSTOMER") {
       const adminCount = await prisma.user.count({ where: { role: "ADMIN", isActive: true } });
       if (adminCount <= 1) {
         return res.status(409).json({ status: "error", message: "CafeServe must keep at least one administrator." });
@@ -162,12 +162,12 @@ async function deleteUser(req, res) {
   try {
     const target = await prisma.user.findUnique({
       where: { id },
-      select: { id: true, name: true, role: true, _count: { select: { orders: true } } },
+      select: { id: true, name: true, role: true, isActive: true, _count: { select: { orders: true } } },
     });
     if (!target) return res.status(404).json({ status: "error", message: "User not found." });
 
-    if (target.role === "ADMIN") {
-      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
+    if (target.role === "ADMIN" && target.isActive) {
+      const adminCount = await prisma.user.count({ where: { role: "ADMIN", isActive: true } });
       if (adminCount <= 1) {
         return res.status(409).json({ status: "error", message: "You cannot delete the last administrator. CafeServe must keep at least one admin." });
       }
