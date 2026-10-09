@@ -18,4 +18,11 @@ function requireAuth(req, res, next) {
   }
 }
 
-module.exports = { requireAuth };
+function requireAdmin(req, res, next) {
+  if (req.user?.role !== "ADMIN") {
+    return res.status(403).json({ status: "error", message: "Admin access is required to perform this action." });
+  }
+  return next();
+}
+
+module.exports = { requireAuth, requireAdmin };
