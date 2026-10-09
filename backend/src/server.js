@@ -49,6 +49,12 @@ app.use("/api/admin", adminMenuRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/users", usersRoutes);
 
-app.listen(PORT, () => {
-  console.log(`CafeServe backend running on http://localhost:${PORT}`);
-});
+// Vercel imports the Express app as a serverless function; local development
+// still starts the regular HTTP server.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`CafeServe backend running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
