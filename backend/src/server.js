@@ -54,7 +54,7 @@ app.post("/api/auth/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
       data: { name, email, password: hashedPassword },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, phone: true, deliveryAddress: true, createdAt: true },
     });
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
 
@@ -96,7 +96,7 @@ app.get("/api/auth/me", requireAuth, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, phone: true, deliveryAddress: true, createdAt: true },
     });
     if (!user) return res.status(404).json({ status: "error", message: "Account not found." });
     return res.json({ status: "success", data: user });
