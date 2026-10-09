@@ -27,6 +27,7 @@ model User {
   email           String    @unique
   password        String
   role            UserRole  @default(CUSTOMER)
+  isActive        Boolean   @default(true)
   phone           String?
   deliveryAddress String?
   orders          Order[]
