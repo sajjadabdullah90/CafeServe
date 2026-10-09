@@ -4,7 +4,7 @@ const categories = [
   { name: "Burgers", items: [
     { name: "Classic Smash Burger", description: "Double smashed beef, cheddar, pickles, and our house sauce.", price: "1290.00", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" },
     { name: "Crispy Chicken Burger", description: "Golden crispy chicken, fresh lettuce, and pepper mayo.", price: "1090.00", image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=85" },
-    { name: "BBQ Baconless Burger", description: "Juicy beef patty, smoky BBQ glaze, onion, and melted cheese.", price: "1390.00", image: "https://images.unsplash.com/photo-1553979459-d2229ba7433a?auto=format&fit=crop&w=900&q=85" }
+    { name: "Mushroom Swiss Burger", description: "Juicy beef patty topped with sautéed mushrooms, Swiss cheese, and creamy garlic sauce.", price: "1450.00", image: "https://images.unsplash.com/photo-1553979459-d2229ba7433a?auto=format&fit=crop&w=900&q=85" }
   ]},
   { name: "Pizza", items: [
     { name: "Margherita Pizza", description: "Tomato, mozzarella, basil, and a crisp stone-baked crust.", price: "1490.00", image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=85" },
@@ -15,13 +15,19 @@ const categories = [
     { name: "Crispy Onion Rings", description: "Golden, crunchy onion rings served with a tangy dip.", price: "590.00", image: "https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=900&q=85" }
   ]},
   { name: "Drinks", items: [
-    { name: "Iced Lemon Cooler", description: "Fresh lemon, mint, and sparkling refreshment.", price: "390.00", image: "https://images.unsplash.com/photo-1513558161293-cdaf765edfd?auto=format&fit=crop&w=900&q=85" },
+    { name: "Mango Smoothie", description: "A chilled, creamy mango blend made for a sweet tropical refresh.", price: "490.00", image: "https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=900&q=85" },
     { name: "Chocolate Shake", description: "Creamy chocolate shake finished with a cocoa dusting.", price: "650.00", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=85" }
   ]}
 ];
 
 async function main() {
   let created = 0;
+
+  // Retire replaced demo items without deleting records referenced by past orders.
+  await prisma.menuItem.updateMany({
+    where: { name: { in: ["BBQ Baconless Burger", "Iced Lemon Cooler"] } },
+    data: { available: false }
+  });
   for (const group of categories) {
     const category = await prisma.category.upsert({
       where: { name: group.name },
