@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +23,7 @@ function Register() {
     setSubmitting(true);
     try {
       await register(name, email, password);
-      navigate("/menu", { replace: true });
+      navigate(location.state?.from || "/menu", { replace: true });
     } catch (err) {
       setError(err.message || "Could not create your account. Please try again.");
     } finally {
@@ -44,7 +45,7 @@ function Register() {
           {error && <p className="auth-error" role="alert">{error}</p>}
           <button className="cart-primary-button cart-primary-button--full" type="submit" disabled={submitting}>{submitting ? "Creating account..." : "Create account"} <span aria-hidden="true">→</span></button>
         </form>
-        <p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p>
+        <p className="auth-switch">Already have an account? <Link to="/login" state={location.state}>Sign in</Link></p>
       </section>
       <aside className="auth-aside"><span>CAFE SERVE / GOOD FOOD, GOOD MOOD</span><div className="auth-aside__orb">✦</div><h2>A better way<br />to order.</h2><p>Discover something delicious and let us take it from there.</p></aside>
     </main>
