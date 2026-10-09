@@ -191,15 +191,23 @@ app.post("/api/orders", requireAuth, async (req, res) => {
       return sum + priceCents * item.quantity;
     }, 0);
 
-    const order = await prisma.order.create({
-      data: {
-        userId: req.user.userId,
-        deliveryAddress,
-        phone,
-        total: (totalCents / 100).toFixed(2),
-        items: { create: orderItems },
-      },
-      include: { items: { include: { menuItem: true } } },
+    // Save the latest delivery details to the customer's profile and keep a snapshot on this order.
+    const order = await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: req.user.userId },
+        data: { phone, deliveryAddress },
+      });
+
+      return tx.order.create({
+        data: {
+          userId: req.user.userId,
+          deliveryAddress,
+          phone,
+          total: (totalCents / 100).toFixed(2),
+          items: { create: orderItems },
+        },
+        include: { items: { include: { menuItem: true } } },
+      });
     });
     return res.status(201).json({ status: "success", message: "Your order has been placed.", data: order });
   } catch (error) {
