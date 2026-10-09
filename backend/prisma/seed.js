@@ -8,14 +8,14 @@ const categories = [
   ]},
   { name: "Pizza", items: [
     { name: "Margherita Pizza", description: "Tomato, mozzarella, basil, and a crisp stone-baked crust.", price: "1490.00", image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=85" },
-    { name: "Smoky Chicken Pizza", description: "Grilled chicken, peppers, red onion, and smoky sauce.", price: "1890.00", image: "https://images.unsplash.com/photo- pizza-?auto=format&fit=crop&w=900&q=85" }
+    { name: "Smoky Chicken Pizza", description: "Grilled chicken, peppers, red onion, and smoky sauce.", price: "1890.00", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=85" }
   ]},
   { name: "Sides", items: [
     { name: "Loaded Fries", description: "Crispy fries with cheese sauce, herbs, and house seasoning.", price: "690.00", image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=85" },
     { name: "Crispy Onion Rings", description: "Golden, crunchy onion rings served with a tangy dip.", price: "590.00", image: "https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=900&q=85" }
   ]},
   { name: "Drinks", items: [
-    { name: "Iced Lemon Cooler", description: "Fresh lemon, mint, and sparkling refreshment.", price: "390.00", image: "https://images.unsplash.com/photo-1513558161293-c daf765edfd?auto=format&fit=crop&w=900&q=85" },
+    { name: "Iced Lemon Cooler", description: "Fresh lemon, mint, and sparkling refreshment.", price: "390.00", image: "https://images.unsplash.com/photo-1513558161293-cdaf765edfd?auto=format&fit=crop&w=900&q=85" },
     { name: "Chocolate Shake", description: "Creamy chocolate shake finished with a cocoa dusting.", price: "650.00", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=85" }
   ]}
 ];
