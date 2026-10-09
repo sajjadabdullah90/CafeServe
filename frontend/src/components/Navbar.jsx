@@ -1,8 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
 function Navbar() {
   const { itemCount } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
 
   return (
     <header className="navbar">
@@ -13,7 +21,12 @@ function Navbar() {
         <Link to="/orders">Orders</Link>
       </nav>
       <div className="navbar__actions">
-        <Link to="/login" className="navbar__login">Login</Link>
+        {isAuthenticated ? (
+          <>
+            <span className="navbar__welcome">Hi, {user.name.split(" ")[0]}</span>
+            <button className="navbar__login navbar__logout" type="button" onClick={handleLogout}>Logout</button>
+          </>
+        ) : <Link to="/login" className="navbar__login">Login</Link>}
         <Link to="/cart" className="navbar__cart" aria-label={`Shopping cart, ${itemCount} items`}>
           Cart <span className="navbar__cart-count">{itemCount}</span>
         </Link>
