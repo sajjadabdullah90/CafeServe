@@ -57,12 +57,16 @@ async function login(req, res) {
     if (!userRecord || !(await bcrypt.compare(password, userRecord.password))) {
       return res.status(401).json({ status: "error", message: "Email or password is incorrect." });
     }
+    if (!userRecord.isActive) {
+      return res.status(403).json({ status: "error", message: "This account has been disabled. Please contact CafeServe support." });
+    }
 
     const user = {
       id: userRecord.id,
       name: userRecord.name,
       email: userRecord.email,
       role: userRecord.role,
+      isActive: userRecord.isActive,
       phone: userRecord.phone,
       deliveryAddress: userRecord.deliveryAddress,
     };
@@ -78,9 +82,10 @@ async function getCurrentUser(req, res) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { id: true, name: true, email: true, role: true, phone: true, deliveryAddress: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, isActive: true, phone: true, deliveryAddress: true, createdAt: true },
     });
     if (!user) return res.status(404).json({ status: "error", message: "Account not found." });
+    if (!user.isActive) return res.status(403).json({ status: "error", message: "This account has been disabled. Please contact CafeServe support." });
 
     // For existing customers, reuse details from their most recent order until a profile save exists.
     const latestOrder = (!user.phone || !user.deliveryAddress)
