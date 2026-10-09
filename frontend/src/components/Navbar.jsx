@@ -21,6 +21,7 @@ function Navbar() {
         {isAdmin ? (
           <>
             <Link to="/admin">Dashboard</Link>
+            <Link to="/admin/menu">Menu Management</Link>
             <Link to="/orders">Orders</Link>
           </>
         ) : (
