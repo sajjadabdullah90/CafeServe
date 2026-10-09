@@ -1950,3 +1950,76 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     animation: none !important;
   }
 }
+
+
+/* Authentication: floating signature burger visual */
+.auth-aside { isolation: isolate; }
+.auth-aside__burger-scene {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: min(88%, 430px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  animation: cs-burger-float 5.5s ease-in-out infinite;
+}
+.auth-burger-glow {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,184,115,.28) 0%, rgba(210,128,50,.12) 42%, transparent 72%);
+  filter: blur(18px);
+}
+.auth-burger-ring {
+  position: absolute;
+  border: 1px solid rgba(233,184,115,.2);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.auth-burger-ring--one { inset: 4%; transform: rotate(-20deg) scaleY(.72); }
+.auth-burger-ring--two { inset: 13%; border-style: dashed; opacity: .65; transform: rotate(24deg) scaleY(.8); }
+.auth-burger-image {
+  position: relative;
+  z-index: 1;
+  width: 77%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid rgba(255,239,212,.12);
+  box-shadow: 0 28px 65px rgba(0,0,0,.48), 0 0 55px rgba(233,184,115,.19);
+  -webkit-mask-image: radial-gradient(circle, #000 58%, rgba(0,0,0,.94) 70%, transparent 100%);
+  mask-image: radial-gradient(circle, #000 58%, rgba(0,0,0,.94) 70%, transparent 100%);
+}
+.auth-burger-note {
+  position: absolute;
+  z-index: 2;
+  right: -1%;
+  bottom: 18%;
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .7rem .85rem;
+  border: 1px solid rgba(233,184,115,.28);
+  border-radius: 999px;
+  background: rgba(19,16,12,.88);
+  color: #f0d4a8;
+  font-size: .61rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+}
+.auth-burger-note i { width: 6px; height: 6px; border-radius: 50%; background: #e9b873; box-shadow: 0 0 12px #e9b873; }
+.auth-burger-note b { color: rgba(240,212,168,.55); font-weight: 500; }
+@keyframes cs-burger-float {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -10px); }
+}
+@media (max-width: 760px) {
+  .auth-aside__burger-scene { top: 7%; width: min(68%, 280px); }
+  .auth-burger-note { right: -8%; bottom: 15%; font-size: .54rem; padding: .55rem .65rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-aside__burger-scene { animation: none; }
+}
