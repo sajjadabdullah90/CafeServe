@@ -39,7 +39,21 @@ function Login() {
         </form>
         <p className="auth-switch">New to CafeServe? <Link to="/register" state={location.state}>Create an account</Link></p>
       </section>
-      <aside className="auth-aside"><span>CAFE SERVE / YOUR TABLE AWAITS</span><div className="auth-aside__orb" aria-hidden="true" /><h2>Made fresh.<br />Made for you.</h2><p>Your next favourite is only a few clicks away.</p></aside>
+      <aside className="auth-aside">
+        <span>CAFE SERVE / YOUR TABLE AWAITS</span>
+        <div className="auth-aside__food-scene" aria-hidden="true">
+          <div className="auth-food-orbit auth-food-orbit--outer" />
+          <div className="auth-food-orbit auth-food-orbit--inner" />
+          <div className="auth-food-image-wrap"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" alt="" /></div>
+          <span className="auth-food-tag auth-food-tag--fresh">FRESHLY MADE <i /></span>
+          <span className="auth-food-tag auth-food-tag--flavour">BIG FLAVOUR <i /></span>
+          <span className="auth-food-spark auth-food-spark--one" />
+          <span className="auth-food-spark auth-food-spark--two" />
+          <span className="auth-food-spark auth-food-spark--three" />
+        </div>
+        <h2>Made fresh.<br />Made for you.</h2>
+        <p>Your next favourite is only a few clicks away.</p>
+      </aside>
     </main>
   );
 }
