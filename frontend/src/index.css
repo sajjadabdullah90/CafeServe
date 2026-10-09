@@ -1543,3 +1543,410 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     animation: none !important;
   }
 }
+
+
+/* Premium warm theme — all admin screens */
+.admin-page,
+.menu-management-page,
+.user-management-page {
+  position: relative;
+  isolation: isolate;
+}
+.admin-page::before,
+.menu-management-page::before,
+.user-management-page::before {
+  position: absolute;
+  z-index: -1;
+  top: 1rem;
+  right: -6vw;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: rgba(233,184,115,.045);
+  filter: blur(78px);
+  content: "";
+  pointer-events: none;
+}
+.admin-intro,
+.menu-management-intro,
+.user-management-intro {
+  animation: cs-rise-in .6s cubic-bezier(.2,.75,.25,1) both;
+}
+.admin-intro h1,
+.admin-empty h1,
+.menu-management-intro h1,
+.user-management-intro h1 {
+  color: #f8f4ed;
+  text-wrap: balance;
+}
+.admin-intro h1 span,
+.admin-empty h1 span,
+.menu-management-intro h1 span,
+.user-management-intro h1 span {
+  color: var(--cs-accent);
+}
+.admin-intro p,
+.menu-management-intro p,
+.user-management-intro p {
+  color: #aaa69f;
+}
+.admin-page .menu-eyebrow,
+.menu-management-page .menu-eyebrow,
+.user-management-page .menu-eyebrow {
+  color: var(--cs-accent);
+}
+.admin-refresh,
+.menu-management-back,
+.user-management-back {
+  border: 1px solid rgba(233,184,115,.22);
+  border-radius: 10px;
+  background: rgba(233,184,115,.055);
+  color: #efd4aa;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.admin-refresh:hover:not(:disabled),
+.menu-management-back:hover,
+.user-management-back:hover {
+  border-color: rgba(233,184,115,.48);
+  background: rgba(233,184,115,.11);
+  color: #ffe0ae;
+  transform: translateY(-1px);
+}
+.admin-refresh:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+.admin-metric,
+.admin-orders-panel,
+.menu-management-form-panel,
+.menu-management-list-panel,
+.user-management-panel {
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.016));
+  box-shadow: 0 18px 48px rgba(0,0,0,.12);
+}
+.admin-metric {
+  transition: border-color .22s ease, transform .22s ease, background .22s ease;
+}
+.admin-metric:hover {
+  transform: translateY(-3px);
+  border-color: rgba(233,184,115,.2);
+  background: linear-gradient(145deg, rgba(233,184,115,.06), rgba(255,255,255,.015));
+}
+.admin-metric > span,
+.admin-metric small {
+  color: #aaa69f;
+}
+.admin-metric strong {
+  color: #f8f4ed;
+}
+.admin-metric--revenue strong,
+.admin-order-total strong {
+  color: var(--cs-accent);
+}
+.admin-orders-heading h2,
+.menu-management-form-panel h2,
+.menu-management-list-heading h2,
+.user-management-panel h2 {
+  color: #f8f4ed;
+  letter-spacing: -.035em;
+}
+.admin-orders-heading h2 span,
+.menu-management-list-heading h2 span,
+.user-management-list-heading h2 span {
+  background: rgba(233,184,115,.12);
+  color: #f0c98f;
+}
+.admin-search,
+.menu-management-controls,
+.user-management-controls {
+  min-width: 0;
+}
+.admin-search input,
+.menu-management-form input:not([type="checkbox"]),
+.menu-management-form textarea,
+.menu-management-form select,
+.menu-management-category input,
+.menu-management-controls input,
+.menu-management-controls select,
+.user-management-form input,
+.user-management-form select,
+.user-management-controls input,
+.user-management-controls select,
+.user-management-role-label select {
+  border-color: rgba(255,255,255,.11);
+  border-radius: 10px;
+  background: rgba(255,255,255,.035);
+  color: #f8f4ed;
+}
+.admin-search input:focus,
+.menu-management-form input:focus,
+.menu-management-form textarea:focus,
+.menu-management-form select:focus,
+.menu-management-category input:focus,
+.menu-management-controls input:focus,
+.menu-management-controls select:focus,
+.user-management-form input:focus,
+.user-management-form select:focus,
+.user-management-controls input:focus,
+.user-management-controls select:focus,
+.user-management-role-label select:focus {
+  border-color: rgba(233,184,115,.58);
+  box-shadow: 0 0 0 3px rgba(233,184,115,.09);
+}
+.admin-search input::placeholder,
+.menu-management-form input::placeholder,
+.menu-management-form textarea::placeholder,
+.menu-management-category input::placeholder,
+.menu-management-controls input::placeholder,
+.user-management-form input::placeholder,
+.user-management-controls input::placeholder {
+  color: #77756f;
+}
+.admin-filters {
+  gap: .5rem;
+}
+.admin-filter {
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.025);
+  color: #bdb7ad;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.admin-filter:hover {
+  border-color: rgba(233,184,115,.32);
+  color: #f3d5a6;
+}
+.admin-filter--active {
+  border-color: rgba(233,184,115,.42);
+  background: rgba(233,184,115,.12);
+  color: #f6d7a5;
+}
+.admin-order-card,
+.menu-management-item,
+.user-management-card {
+  border-color: rgba(255,255,255,.075);
+  border-radius: 14px;
+  background: rgba(255,255,255,.022);
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.admin-order-card:hover,
+.menu-management-item:hover,
+.user-management-card:hover {
+  border-color: rgba(233,184,115,.17);
+  background: rgba(233,184,115,.025);
+}
+.admin-order-card__top,
+.admin-order-card__details,
+.admin-order-card__actions,
+.menu-management-category,
+.menu-management-item__meta,
+.user-management-card {
+  border-color: rgba(255,255,255,.075);
+}
+.admin-order-number,
+.admin-order-card__details > div > span,
+.admin-order-card__actions label {
+  color: #aaa69f;
+}
+.admin-order-card__top h3,
+.admin-order-card__details p,
+.menu-management-item__title h3,
+.user-management-card__identity h3 {
+  color: #f5f1e9;
+}
+.admin-order-card__top p,
+.admin-order-card__details small,
+.menu-management-muted,
+.menu-management-item__content > p,
+.user-management-panel > p,
+.user-management-card__identity p {
+  color: #aaa69f;
+}
+.admin-order-card__details small,
+.menu-management-item__content > small,
+.user-management-card__identity small {
+  overflow-wrap: anywhere;
+}
+.admin-order-card__actions select {
+  border-color: rgba(233,184,115,.2);
+  background: #201b15;
+  color: #f8f4ed;
+}
+.admin-order-card__actions select:focus {
+  border-color: rgba(233,184,115,.58);
+}
+.admin-view-link,
+.menu-management-back {
+  color: #e9c48e;
+}
+.admin-view-link:hover {
+  color: #ffe0ae;
+}
+.order-status {
+  border-color: rgba(233,184,115,.23);
+  background: rgba(233,184,115,.075);
+  color: #f0d2a3;
+}
+.order-status--completed {
+  border-color: rgba(99,205,163,.28);
+  background: rgba(28,71,59,.2);
+  color: #8be0bc;
+}
+.order-status--cancelled {
+  border-color: rgba(255,115,115,.25);
+  background: rgba(130,35,45,.13);
+  color: #ffaaaa;
+}
+.admin-alert:not(.admin-alert--error) {
+  border-color: rgba(233,184,115,.2);
+  background: rgba(233,184,115,.06);
+  color: #f0d2a3;
+}
+.admin-alert--error {
+  border-color: rgba(255,115,115,.25);
+  background: rgba(130,35,45,.13);
+  color: #ffb4b4;
+}
+.admin-state h3 {
+  color: #f5f1e9;
+}
+.admin-state p {
+  color: #aaa69f;
+}
+.menu-management-form > label,
+.menu-management-form__row > label,
+.user-management-form label {
+  color: #ded6c9;
+}
+.menu-management-form select option,
+.menu-management-controls select option,
+.user-management-form select option,
+.user-management-controls select option,
+.user-management-role-label select option {
+  background: #201b15;
+  color: #f8f4ed;
+}
+.menu-management-checkbox {
+  color: #c5bfb5;
+}
+.menu-management-checkbox input {
+  accent-color: #e9b873;
+}
+.menu-management-hint {
+  color: #f0c98f;
+}
+.menu-management-category h3 {
+  color: #f5f1e9;
+}
+.menu-management-category button {
+  border-color: rgba(233,184,115,.28);
+  background: rgba(233,184,115,.1);
+  color: #f0d2a3;
+}
+.menu-management-category button:hover {
+  background: rgba(233,184,115,.17);
+}
+.menu-management-cancel {
+  border-color: rgba(255,255,255,.13);
+  background: rgba(255,255,255,.025);
+  color: #d3cabe;
+}
+.menu-management-item__image {
+  border: 1px solid rgba(233,184,115,.12);
+  background: rgba(233,184,115,.055);
+  color: #d8b77f;
+}
+.menu-management-item__meta > span {
+  color: #bdb7ad;
+}
+.menu-management-item__meta strong {
+  color: var(--cs-accent);
+}
+.menu-management-status {
+  border-color: rgba(99,205,163,.24);
+  background: rgba(28,71,59,.17);
+  color: #8be0bc;
+}
+.menu-management-status--hidden {
+  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: #aaa69f;
+}
+.menu-management-item__actions button {
+  border-color: rgba(233,184,115,.2);
+  background: rgba(233,184,115,.055);
+  color: #efd4aa;
+  transition: background .2s ease, border-color .2s ease;
+}
+.menu-management-item__actions button:hover {
+  border-color: rgba(233,184,115,.45);
+  background: rgba(233,184,115,.12);
+}
+.menu-management-item__actions .menu-management-item__archive {
+  border-color: rgba(255,115,115,.2);
+  background: rgba(130,35,45,.09);
+  color: #ffb4b4;
+}
+.user-management-stats .admin-metric,
+.user-management-stats > article {
+  border-color: rgba(255,255,255,.085);
+  background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.016));
+}
+.user-management-avatar {
+  border-color: rgba(233,184,115,.23);
+  background: linear-gradient(145deg, rgba(233,184,115,.22), rgba(80,54,26,.22));
+  color: #f4d6a4;
+}
+.user-management-you {
+  background: rgba(233,184,115,.12);
+  color: #f0d2a3;
+}
+.user-management-role-label {
+  color: #aaa69f;
+}
+.user-management-security-note,
+.user-management-self-note {
+  color: #969087;
+}
+.user-management-delete {
+  transition: background .18s ease, border-color .18s ease;
+}
+.user-management-status-action {
+  border-color: rgba(99,205,163,.24);
+  background: rgba(28,71,59,.16);
+  color: #a1e8c9;
+}
+.user-management-status-action--disable {
+  border-color: rgba(233,184,115,.24);
+  background: rgba(130,85,35,.12);
+  color: #ffd09a;
+}
+.user-management-status-action:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+@media (max-width: 980px) {
+  .admin-page,
+  .menu-management-page,
+  .user-management-page {
+    width: min(100% - 2rem, 760px);
+  }
+}
+@media (max-width: 640px) {
+  .admin-page,
+  .menu-management-page,
+  .user-management-page {
+    width: min(100% - 1.25rem, 760px);
+  }
+  .admin-metric,
+  .user-management-panel {
+    min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-intro,
+  .menu-management-intro,
+  .user-management-intro {
+    animation: none !important;
+  }
+}
