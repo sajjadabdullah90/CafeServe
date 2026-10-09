@@ -83,7 +83,7 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ status: "error", message: "Email or password is incorrect." });
     }
 
-    const user = { id: userRecord.id, name: userRecord.name, email: userRecord.email, role: userRecord.role };
+    const user = { id: userRecord.id, name: userRecord.name, email: userRecord.email, role: userRecord.role, phone: userRecord.phone, deliveryAddress: userRecord.deliveryAddress };
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
     return res.json({ status: "success", message: "Welcome back.", token, data: user });
   } catch (error) {
