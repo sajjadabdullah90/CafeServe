@@ -15,6 +15,8 @@ function MenuManagement() {
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [categoryName, setCategoryName] = useState("");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("ALL");
@@ -51,6 +53,13 @@ function MenuManagement() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
+  useEffect(() => {
+    if (!selectedImage) { setImagePreview(""); return undefined; }
+    const objectUrl = URL.createObjectURL(selectedImage);
+    setImagePreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedImage]);
+
   const visibleItems = useMemo(() => {
     const query = search.trim().toLowerCase();
     return items.filter((item) => {
@@ -69,6 +78,7 @@ function MenuManagement() {
 
   function startEdit(item) {
     setEditingId(item.id);
+    setSelectedImage(null);
     setForm({
       name: item.name || "",
       description: item.description || "",
@@ -84,6 +94,7 @@ function MenuManagement() {
 
   function resetForm() {
     setEditingId(null);
+    setSelectedImage(null);
     setForm({ ...EMPTY_FORM, categoryId: categories.length ? String(categories[0].id) : "" });
   }
 
@@ -93,14 +104,20 @@ function MenuManagement() {
     setError("");
     setNotice("");
     try {
-      const payload = {
-        name: form.name.trim(),
-        description: form.description.trim(),
-        price: Number(form.price),
-        image: form.image.trim(),
-        categoryId: Number(form.categoryId),
-        available: Boolean(form.available),
-      };
+      let imageUrl = form.image.trim();
+      if (selectedImage) {
+        const uploadBody = new FormData();
+        uploadBody.append("image", selectedImage);
+        const uploadResponse = await fetch(`${API_URL}/api/admin/uploads/menu-image`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: uploadBody,
+        });
+        const uploadResult = await uploadResponse.json();
+        if (!uploadResponse.ok) throw new Error(uploadResult.message || "Could not upload the image.");
+        imageUrl = uploadResult.data.url;
+      }
+      const payload = { name: form.name.trim(), description: form.description.trim(), price: Number(form.price), image: imageUrl, categoryId: Number(form.categoryId), available: Boolean(form.available) };
       const response = await fetch(`${API_URL}/api/admin/menu${editingId ? `/${editingId}` : ""}`, {
         method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -226,7 +243,26 @@ function MenuManagement() {
               <label>Price (PKR)<input name="price" type="number" min="0.01" max="9999999.99" step="0.01" value={form.price} onChange={updateField} placeholder="1290" required /></label>
               <label>Category<select name="categoryId" value={form.categoryId} onChange={updateField} required disabled={!categories.length}><option value="">Choose category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
             </div>
-            <label>Image URL <span className="menu-management-optional">(optional)</span><input name="image" type="url" value={form.image} onChange={updateField} placeholder="https://example.com/food.jpg" /></label>
+            <div className="menu-image-upload">
+              <span className="menu-image-upload__label">Food image <span className="menu-management-optional">(optional)</span></span>
+              <label className="menu-image-upload__picker">
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  setError("");
+                  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) { setError("Choose a JPG, PNG, or WebP image."); event.target.value = ""; return; }
+                  if (file.size > 5 * 1024 * 1024) { setError("Image must be 5 MB or smaller."); event.target.value = ""; return; }
+                  setSelectedImage(file);
+                }} />
+                <span aria-hidden="true">↑</span><strong>{selectedImage ? "Choose a different image" : "Choose image from device"}</strong>
+                <small>JPG, PNG or WebP · Maximum 5 MB</small>
+              </label>
+              {(imagePreview || form.image) && <div className="menu-image-upload__preview">
+                <img src={imagePreview || form.image} alt="Food image preview" />
+                <div><strong>{selectedImage ? selectedImage.name : "Current menu image"}</strong><small>{selectedImage ? `${(selectedImage.size / (1024 * 1024)).toFixed(2)} MB · Uploads when you save` : "This image is already saved"}</small></div>
+                <button type="button" onClick={() => { setSelectedImage(null); setForm((current) => ({ ...current, image: "" })); }} aria-label="Remove image">×</button>
+              </div>}
+            </div>
             <label className="menu-management-checkbox"><input type="checkbox" name="available" checked={form.available} onChange={updateField} /> Visible and available for customer orders</label>
             <div className="menu-management-form__actions">
               <button className="cart-primary-button" type="submit" disabled={saving || !categories.length}>{saving ? "Saving…" : editingId ? "Save changes" : "Add to menu"}</button>
