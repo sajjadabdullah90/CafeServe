@@ -47,7 +47,18 @@ function Register() {
         </form>
         <p className="auth-switch">Already have an account? <Link to="/login" state={location.state}>Sign in</Link></p>
       </section>
-      <aside className="auth-aside"><span>CAFE SERVE / GOOD FOOD, GOOD MOOD</span><div className="auth-aside__orb">✦</div><h2>A better way<br />to order.</h2><p>Discover something delicious and let us take it from there.</p></aside>
+      <aside className="auth-aside">
+        <span>CAFE SERVE / GOOD FOOD, GOOD MOOD</span>
+        <div className="auth-aside__burger-scene" aria-hidden="true">
+          <div className="auth-burger-glow" />
+          <div className="auth-burger-ring auth-burger-ring--one" />
+          <div className="auth-burger-ring auth-burger-ring--two" />
+          <img className="auth-burger-image" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1000&q=90" alt="" />
+          <span className="auth-burger-note"><i /> HOUSE FAVOURITE <b>01</b></span>
+        </div>
+        <h2>A better way<br />to order.</h2>
+        <p>Discover something delicious and let us take it from there.</p>
+      </aside>
     </main>
   );
 }

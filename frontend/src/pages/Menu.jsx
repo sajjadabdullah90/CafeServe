@@ -70,7 +70,7 @@ function Menu() {
             return (
               <article className="food-card" key={item.id}>
                 <div className="food-card__image-wrap">
-                  {item.image ? <img className="food-card__image" src={item.image} alt={item.name} loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; event.currentTarget.parentElement.classList.add("food-card__image-wrap--missing"); }} /> : <div className="food-card__image-placeholder" aria-label="No image available">🍽️</div>}
+                  {item.image ? <img className="food-card__image" src={item.image} alt={item.name} loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; event.currentTarget.parentElement.classList.add("food-card__image-wrap--missing"); }} /> : <div className="food-card__image-placeholder" aria-label="No image available"><span>Photo coming soon</span></div>}
                   {item.category?.name && <span className="food-card__category">{item.category.name}</span>}
                 </div>
                 <div className="food-card__body">
