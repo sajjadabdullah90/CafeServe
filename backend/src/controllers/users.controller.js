@@ -99,4 +99,43 @@ async function updateUserRole(req, res) {
   }
 }
 
-module.exports = { listUsers, createUser, updateUserRole };
+async function deleteUser(req, res) {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ status: "error", message: "Invalid user ID." });
+  }
+  if (id === req.user.userId) {
+    return res.status(400).json({ status: "error", message: "You cannot delete your own account while signed in. Ask another administrator to manage it." });
+  }
+
+  try {
+    const target = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, name: true, role: true, _count: { select: { orders: true } } },
+    });
+    if (!target) return res.status(404).json({ status: "error", message: "User not found." });
+
+    if (target.role === "ADMIN") {
+      const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
+      if (adminCount <= 1) {
+        return res.status(409).json({ status: "error", message: "You cannot delete the last administrator. CafeServe must keep at least one admin." });
+      }
+    }
+
+    if (target._count.orders > 0) {
+      return res.status(409).json({
+        status: "error",
+        message: `This account has ${target._count.orders} order(s). It cannot be deleted because CafeServe preserves order history. Change the user's role if access needs to be restricted.`,
+      });
+    }
+
+    await prisma.user.delete({ where: { id } });
+    return res.json({ status: "success", message: `${target.role === "ADMIN" ? "Administrator" : "User"} account deleted.`, data: { id: target.id } });
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    return res.status(500).json({ status: "error", message: "Could not delete this account right now." });
+  }
+}
+
+module.exports = { listUsers, createUser, updateUserRole, deleteUser };
