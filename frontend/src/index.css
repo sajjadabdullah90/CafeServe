@@ -607,3 +607,8 @@ input {
 .user-management-security-note { margin-top: 1.1rem; color: #777f91; font-size: .75rem; line-height: 1.6; }
 @media (max-width: 980px) { .user-management-layout { grid-template-columns: 1fr; } .user-management-intro { align-items: flex-start; flex-direction: column; } }
 @media (max-width: 640px) { .user-management-page { padding-top: 3rem; } .user-management-stats { grid-template-columns: 1fr; } .user-management-card { grid-template-columns: 38px minmax(0,1fr); } .user-management-avatar { width: 38px; height: 38px; } .user-management-card__actions { grid-column: 2; grid-template-columns: auto minmax(120px,1fr); align-items: center; width: 100%; } .user-management-role-label { grid-column: 2; } .user-management-self-note { grid-column: 1 / -1; } .user-management-controls { grid-template-columns: 1fr; } .user-management-list-heading { align-items: flex-start; } }
+
+
+.user-management-delete { padding: .5rem .65rem; border: 1px solid rgba(255,105,105,.24); border-radius: 9px; background: rgba(130,35,45,.12); color: #ffb4b4; font: inherit; font-size: .7rem; cursor: pointer; transition: background .18s ease, border-color .18s ease; }
+.user-management-delete:hover:not(:disabled) { border-color: rgba(255,105,105,.55); background: rgba(130,35,45,.25); }
+.user-management-delete:disabled { opacity: .4; cursor: not-allowed; }
