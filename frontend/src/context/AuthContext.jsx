@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext(null);
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem(USER_KEY);
   }, [user]);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -39,9 +39,9 @@ export function AuthProvider({ children }) {
     setToken(result.token);
     setUser(result.data);
     return result.data;
-  };
+  }, []);
 
-  const register = async (name, email, password) => {
+  const register = useCallback(async (name, email, password) => {
     const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -52,14 +52,14 @@ export function AuthProvider({ children }) {
     setToken(result.token);
     setUser(result.data);
     return result.data;
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
-  };
+  }, []);
 
-  const value = useMemo(() => ({ user, token, isAuthenticated: Boolean(token && user), login, register, logout }), [user, token]);
+  const value = useMemo(() => ({ user, token, isAuthenticated: Boolean(token && user), login, register, logout }), [user, token, login, register, logout]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
