@@ -11,7 +11,7 @@ function formatPrice(value) {
 
 function Checkout() {
   const { user, token, isAuthenticated } = useAuth();
-  const { items, itemCount, subtotal } = useCart();
+  const { items, itemCount, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -55,7 +55,7 @@ function Checkout() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Could not place your order.");
       // Only clear the cart after the API confirms the order was saved.
-      window.dispatchEvent(new CustomEvent("cafeserve:order-placed"));
+      clearCart();
       navigate(`/orders/${result.data.id}`, { replace: true, state: { justPlaced: true } });
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
