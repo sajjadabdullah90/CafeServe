@@ -19,6 +19,7 @@ function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/menu">Menu</Link>
         <Link to="/orders">Orders</Link>
+        {user?.role === "ADMIN" && <Link to="/admin">Admin</Link>}
       </nav>
       <div className="navbar__actions">
         {isAuthenticated ? (
