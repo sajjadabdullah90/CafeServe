@@ -58,7 +58,7 @@ function Cart() {
             <div className="cart-summary__line"><span>Subtotal · {itemCount} {itemCount === 1 ? "item" : "items"}</span><strong>{formatPrice(subtotal)}</strong></div>
             <div className="cart-summary__line"><span>Delivery</span><span className="cart-summary__muted">Calculated at checkout</span></div>
             <div className="cart-summary__total"><span>Estimated total</span><strong>{formatPrice(subtotal)}</strong></div>
-            <button className="cart-primary-button cart-primary-button--full" type="button" onClick={() => window.alert("Checkout is the next feature we will build.")}>Continue to checkout <span aria-hidden="true">→</span></button>
+            <button className="cart-primary-button cart-primary-button--full" type="button" onClick={() => window.location.assign("/checkout")}>Continue to checkout <span aria-hidden="true">→</span></button>
             <p className="cart-summary__note">Delivery charges, if applicable, will be confirmed at checkout.</p>
           </aside>
         </div>
