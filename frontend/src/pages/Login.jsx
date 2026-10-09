@@ -41,15 +41,12 @@ function Login() {
       </section>
       <aside className="auth-aside">
         <span>CAFE SERVE / YOUR TABLE AWAITS</span>
-        <div className="auth-aside__food-scene" aria-hidden="true">
-          <div className="auth-food-orbit auth-food-orbit--outer" />
-          <div className="auth-food-orbit auth-food-orbit--inner" />
-          <div className="auth-food-image-wrap"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" alt="" /></div>
-          <span className="auth-food-tag auth-food-tag--fresh">FRESHLY MADE <i /></span>
-          <span className="auth-food-tag auth-food-tag--flavour">BIG FLAVOUR <i /></span>
-          <span className="auth-food-spark auth-food-spark--one" />
-          <span className="auth-food-spark auth-food-spark--two" />
-          <span className="auth-food-spark auth-food-spark--three" />
+        <div className="auth-aside__burger-scene" aria-hidden="true">
+          <div className="auth-burger-glow" />
+          <div className="auth-burger-ring auth-burger-ring--one" />
+          <div className="auth-burger-ring auth-burger-ring--two" />
+          <img className="auth-burger-image" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1000&q=90" alt="" />
+          <span className="auth-burger-note"><i /> HOUSE FAVOURITE <b>01</b></span>
         </div>
         <h2>Made fresh.<br />Made for you.</h2>
         <p>Your next favourite is only a few clicks away.</p>
