@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -19,7 +18,6 @@ function readableStatus(status) {
 
 function Orders() {
   const { token, isAuthenticated } = useAuth();
-  const { clearCart } = useCart();
   const { id } = useParams();
   const location = useLocation();
   const [orders, setOrders] = useState([]);
@@ -43,7 +41,6 @@ function Orders() {
         const data = id ? [result.data] : result.data;
         setOrders(Array.isArray(data) ? data : []);
         setStatus("success");
-        if (id && location.state?.justPlaced) clearCart();
       } catch (err) {
         if (err.name !== "AbortError") {
           setError(err.message || "Could not load your orders.");
@@ -53,7 +50,7 @@ function Orders() {
     }
     loadOrders();
     return () => controller.abort();
-  }, [id, token, isAuthenticated, location.state, clearCart]);
+  }, [id, token, isAuthenticated]);
 
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: id ? `/orders/${id}` : "/orders" }} />;
 
