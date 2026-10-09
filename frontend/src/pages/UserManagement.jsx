@@ -13,6 +13,7 @@ function UserManagement() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
@@ -44,10 +45,11 @@ function UserManagement() {
     const query = search.trim().toLowerCase();
     return users.filter((item) => {
       const matchesRole = roleFilter === "ALL" || item.role === roleFilter;
+      const matchesStatus = statusFilter === "ALL" || (statusFilter === "ACTIVE" ? item.isActive : !item.isActive);
       const matchesSearch = !query || [item.name, item.email, String(item.id)].some((value) => String(value || "").toLowerCase().includes(query));
-      return matchesRole && matchesSearch;
+      return matchesRole && matchesStatus && matchesSearch;
     });
-  }, [users, search, roleFilter]);
+  }, [users, search, roleFilter, statusFilter]);
 
   function updateForm(event) {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -96,6 +98,43 @@ function UserManagement() {
       setNotice(`${target.name}'s role changed to ${role}.`);
     } catch (err) {
       setError(err.message || "Could not update role.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+
+  async function toggleAccountStatus(target) {
+    if (target.id === user?.id && target.isActive) {
+      setError("You cannot disable your own account.");
+      return;
+    }
+
+    const nextStatus = !target.isActive;
+    const action = nextStatus ? "reactivate" : "disable";
+    const confirmed = window.confirm(
+      "Are you sure you want to " + action + " " + target.name + "'s account? " +
+      (nextStatus
+        ? "They will be able to sign in again."
+        : "They will lose access immediately, but their order history will be preserved.")
+    );
+    if (!confirmed) return;
+
+    setUpdatingId(target.id);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch(API_URL + "/api/admin/users/" + target.id + "/status", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ isActive: nextStatus }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Could not update account status.");
+      setUsers((current) => current.map((item) => item.id === target.id ? result.data : item));
+      setNotice(result.message || "Account status updated.");
+    } catch (err) {
+      setError(err.message || "Could not update account status.");
     } finally {
       setUpdatingId(null);
     }
@@ -150,7 +189,8 @@ function UserManagement() {
       <section className="user-management-stats" aria-label="User counts">
         <article className="admin-metric"><span>Total accounts</span><strong>{users.length}</strong><small>All CafeServe accounts</small></article>
         <article className="admin-metric"><span>Administrators</span><strong>{admins}</strong><small>Can access admin operations</small></article>
-        <article className="admin-metric"><span>Customers</span><strong>{customers}</strong><small>Can order from the menu</small></article>
+        <article className="admin-metric"><span>Customers</span><strong>{customers}</strong><small>Customer accounts</small></article>
+        <article className="admin-metric"><span>Disabled accounts</span><strong>{users.filter((item) => !item.isActive).length}</strong><small>Access currently blocked</small></article>
       </section>
 
       <section className="user-management-layout">
@@ -172,6 +212,7 @@ function UserManagement() {
           <div className="user-management-controls">
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search name, email, ID…" aria-label="Search users" />
             <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value)} aria-label="Filter by role"><option value="ALL">All roles</option><option value="ADMIN">Admins</option><option value="CUSTOMER">Customers</option></select>
+            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Filter by account status"><option value="ALL">All statuses</option><option value="ACTIVE">Active</option><option value="DISABLED">Disabled</option></select>
           </div>
           {loading && users.length === 0 ? <div className="admin-state"><span className="menu-spinner" /><h3>Loading accounts</h3><p>Retrieving the user directory.</p></div>
             : visibleUsers.length === 0 ? <div className="admin-state"><h3>No users found</h3><p>Try another search or role filter.</p></div>
@@ -180,8 +221,12 @@ function UserManagement() {
                   <div className="user-management-avatar" aria-hidden="true">{item.name.slice(0, 1).toUpperCase()}</div>
                   <div className="user-management-card__identity"><h3>{item.name} {item.id === user.id && <span className="user-management-you">YOU</span>}</h3><p>{item.email}</p><small>Joined {formatDate(item.createdAt)} · ID #{item.id}</small></div>
                   <div className="user-management-card__actions"><span className={item.role === "ADMIN" ? "user-role-badge user-role-badge--admin" : "user-role-badge"}>{item.role === "ADMIN" ? "Administrator" : "Customer"}</span>
+                    <span className={item.isActive ? "user-status-badge user-status-badge--active" : "user-status-badge user-status-badge--disabled"}>{item.isActive ? "Active" : "Disabled"}</span>
                     <label className="user-management-role-label">Change role<select value={item.role} disabled={updatingId === item.id || item.id === user.id} onChange={(event) => changeRole(item, event.target.value)} aria-label={`Change role for ${item.name}`}><option value="CUSTOMER">Customer</option><option value="ADMIN">Administrator</option></select></label>
                     {item.id === user.id && <small className="user-management-self-note">Your own role is locked here.</small>}
+                    <button className={item.isActive ? "user-management-status-action user-management-status-action--disable" : "user-management-status-action"} type="button" disabled={updatingId === item.id || item.id === user.id} onClick={() => toggleAccountStatus(item)}>
+                      {updatingId === item.id ? "Working…" : item.isActive ? "Disable account" : "Reactivate account"}
+                    </button>
                     <button className="user-management-delete" type="button" disabled={updatingId === item.id || item.id === user.id} onClick={() => deleteAccount(item)}>
                       {updatingId === item.id ? "Working…" : "Delete account"}
                     </button>
@@ -190,7 +235,7 @@ function UserManagement() {
               ))}</div>}
         </section>
       </section>
-      <p className="user-management-security-note">Security note: only administrators can use these controls. Passwords are hashed before storage, and role changes are checked against the database on every admin request.</p>
+      <p className="user-management-security-note">Security note: only administrators can use these controls. Passwords are hashed before storage. Disabled accounts lose access immediately, while their order history is preserved.</p>
     </main>
   );
 }
