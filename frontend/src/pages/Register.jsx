@@ -47,7 +47,7 @@ function Register() {
         </form>
         <p className="auth-switch">Already have an account? <Link to="/login" state={location.state}>Sign in</Link></p>
       </section>
-      <aside className="auth-aside"><span>CAFE SERVE / GOOD FOOD, GOOD MOOD</span><div className="auth-aside__orb">✦</div><h2>A better way<br />to order.</h2><p>Discover something delicious and let us take it from there.</p></aside>
+      <aside className="auth-aside"><span>CAFE SERVE / GOOD FOOD, GOOD MOOD</span><div className="auth-aside__orb" aria-hidden="true" /><h2>A better way<br />to order.</h2><p>Discover something delicious and let us take it from there.</p></aside>
     </main>
   );
 }
