@@ -273,3 +273,17 @@ input {
 .menu-retry { margin-top: 1rem; padding: .75rem 1rem; border: 1px solid rgba(142,164,235,.35); border-radius: 10px; background: #17213b; color: white; cursor: pointer; }
 @media (max-width: 900px) { .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .menu-page { padding-top: 3.5rem; } .menu-grid { grid-template-columns: 1fr; } .food-card__image-wrap { height: 230px; } .menu-intro { padding-bottom: 2rem; } }
+
+
+.food-card__image-wrap--missing {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(117, 137, 196, .2), transparent 55%),
+    linear-gradient(145deg, #1c2030, #101116);
+}
+.food-card__image-wrap--missing::after {
+  content: "🍽️";
+  font-size: 3.5rem;
+  filter: grayscale(.15);
+}
