@@ -99,7 +99,21 @@ app.get("/api/auth/me", requireAuth, async (req, res) => {
       select: { id: true, name: true, email: true, role: true, phone: true, deliveryAddress: true, createdAt: true },
     });
     if (!user) return res.status(404).json({ status: "error", message: "Account not found." });
-    return res.json({ status: "success", data: user });
+
+    // For existing customers, reuse details from their most recent order until a profile save exists.
+    const latestOrder = (!user.phone || !user.deliveryAddress)
+      ? await prisma.order.findFirst({
+          where: { userId: req.user.userId },
+          orderBy: { createdAt: "desc" },
+          select: { phone: true, deliveryAddress: true },
+        })
+      : null;
+    const account = {
+      ...user,
+      phone: user.phone || latestOrder?.phone || null,
+      deliveryAddress: user.deliveryAddress || latestOrder?.deliveryAddress || null,
+    };
+    return res.json({ status: "success", data: account });
   } catch (error) {
     console.error("Failed to load account:", error);
     return res.status(500).json({ status: "error", message: "Could not load your account." });
