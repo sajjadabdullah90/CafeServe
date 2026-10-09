@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -17,6 +17,31 @@ function Checkout() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+
+    async function loadSavedDeliveryDetails() {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) return;
+        const result = await response.json();
+        if (cancelled) return;
+        setPhone(result.data?.phone || "");
+        setDeliveryAddress(result.data?.deliveryAddress || "");
+      } catch {
+        // Checkout remains usable if saved details cannot be loaded.
+      }
+    }
+
+    loadSavedDeliveryDetails();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: "/checkout" }} />;
@@ -73,7 +98,7 @@ function Checkout() {
       </section>
       <div className="checkout-layout">
         <section className="checkout-panel">
-          <div className="checkout-panel__heading"><span>01</span><div><h2>Delivery details</h2><p>Where should we bring your order?</p></div></div>
+          <div className="checkout-panel__heading"><span>01</span><div><h2>Delivery details</h2><p>Your saved details appear here automatically. You can change them anytime.</p></div></div>
           <form id="checkout-form" className="auth-form checkout-form" onSubmit={handleSubmit}>
             <label>Contact phone<input type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="+92 300 1234567" minLength={7} maxLength={25} required /></label>
             <label>Full delivery address<textarea autoComplete="street-address" value={deliveryAddress} onChange={(event) => setDeliveryAddress(event.target.value)} placeholder="House / apartment, street, area, city" minLength={8} maxLength={500} rows={4} required /></label>
