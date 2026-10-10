@@ -2176,7 +2176,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .receipt-footer > strong { color: #f4d6a4; }
 .receipt-footer p { max-width: 520px; margin: .55rem auto .8rem; color: #969087; font-size: .78rem; line-height: 1.6; }
 .receipt-footer > span { color: #80786c; font-size: .62rem; letter-spacing: .1em; }
-.receipt-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; margin-top: 1rem; }
+.receipt-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .8rem;
+  margin-top: 1rem;
+}
+.receipt-actions > * {
+  width: fit-content;
+  max-width: 100%;
+}
 .receipt-print-button { padding: .8rem 1.05rem; border: 1px solid rgba(233,184,115,.35); border-radius: 10px; background: linear-gradient(135deg,#e9b873,#d6a15b); color: #21170d; font-weight: 750; cursor: pointer; }
 .receipt-print-button:hover { filter: brightness(1.06); }
 @media (max-width: 560px) {
