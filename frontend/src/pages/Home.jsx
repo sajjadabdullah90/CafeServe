@@ -1,6 +1,30 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
+  useEffect(() => {
+    const elements = document.querySelectorAll(".scroll-reveal");
+    if (!("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.16, rootMargin: "0px 0px -35px 0px" }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="home home--luxury">
       <section className="hero hero--luxury">
@@ -52,29 +76,32 @@ function Home() {
         </div>
       </section>
 
-      <section className="signature-strip" aria-label="Explore CafeServe favourites">
-        <div className="signature-strip__heading">
-          <span>CURATED FOR YOUR CRAVINGS</span>
-          <h2>A favourite for every mood.</h2>
+      <section className="craving-story scroll-reveal" aria-label="Discover the CafeServe menu">
+        <div className="craving-story__photo">
+          <img
+            src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=90"
+            alt="Freshly prepared gourmet burger ready to enjoy"
+            loading="lazy"
+          />
+          <span className="craving-story__photo-note">A good day deserves good food.</span>
         </div>
-        <div className="signature-strip__items">
-          <article className="signature-tile">
-            <img src="https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=700&q=85" alt="Pizza topped with cheese and herbs" loading="lazy" />
-            <div><span>01 / FRESH FROM THE OVEN</span><h3>Pizza & pasta</h3></div>
-          </article>
-          <article className="signature-tile">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=700&q=85" alt="Juicy gourmet burger" loading="lazy" />
-            <div><span>02 / THE CLASSIC CRAVING</span><h3>Gourmet burgers</h3></div>
-          </article>
-          <article className="signature-tile">
-            <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=85" alt="Cup of freshly brewed coffee" loading="lazy" />
-            <div><span>03 / YOUR LITTLE PAUSE</span><h3>Coffee & desserts</h3></div>
-          </article>
+        <div className="craving-story__copy">
+          <span className="craving-story__eyebrow">YOUR NEXT CRAVING, SORTED</span>
+          <h2>Make tonight<br />taste <em>better.</em></h2>
+          <p>
+            The comfort-food classic, a little treat for yourself, or something
+            to share. Find the dish that sounds good right now, then let CafeServe
+            take it from there.
+          </p>
+          <div className="craving-story__details">
+            <span><i aria-hidden="true">01</i> Explore something delicious</span>
+            <span><i aria-hidden="true">02</i> Order in a few simple steps</span>
+          </div>
+          <Link to="/menu" className="craving-story__cta">Find your next favourite <span aria-hidden="true">↗</span></Link>
         </div>
-        <Link to="/menu" className="signature-strip__link">Find your favourite <span aria-hidden="true">↗</span></Link>
       </section>
 
-      <section className="features" id="how-it-works" aria-label="How CafeServe works">
+      <section className="features scroll-reveal" id="how-it-works" aria-label="How CafeServe works">
         <article className="feature-card">
           <span className="feature-card__number">01 <span> / DISCOVER</span></span>
           <h2>Find your favourite.</h2>
