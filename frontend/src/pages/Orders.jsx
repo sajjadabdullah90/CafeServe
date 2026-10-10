@@ -52,7 +52,17 @@ async function downloadReceiptPdf(order) {
   const line = [229, 226, 219];
   let y = 18;
 
-  const text = (value) => String(value ?? "—").replace(/[\\u0000-\\u001f]/g, " ").trim() || "—";
+  // jsPDF's built-in Helvetica fonts have limited Unicode coverage. Normalize typographic
+  // punctuation to standard PDF-safe characters so labels don't lose glyphs in PDF viewers.
+  const text = (value) => String(value ?? "—")
+    .replace(/[\\u0000-\\u001f]/g, " ")
+    .replace(/[’‘]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, "-")
+    .replace(/…/g, "...")
+    .replace(/·/g, "|")
+    .replace(/₨/g, "Rs.")
+    .trim() || "—";
   const money = (value) => `Rs. ${Number(value || 0).toLocaleString("en-PK", { maximumFractionDigits: 2 })}`;
   const date = formatDate(order.createdAt);
   const orderNumber = text(order.id);
@@ -78,11 +88,15 @@ async function downloadReceiptPdf(order) {
     pdf.setFont("helvetica", "bold");
     pdf.setFontSize(10);
     pdf.setTextColor(255, 255, 255);
-    pdf.text(pageLabel || "ORDER RECEIPT", pageWidth - margin, 18, { align: "right" });
-    pdf.setFont("helvetica", "normal");
+    pdf.text(pageLabel || "ORDER RECEIPT", pageWidth - margin, 17, { align: "right" });
+    // Give the order number its own line and a little extra contrast to prevent clipping/overlap.
+    pdf.setFillColor(...gold);
+    pdf.roundedRect(pageWidth - margin - 39, 21, 39, 8, 1.5, 1.5, "F");
+    pdf.setFont("helvetica", "bold");
     pdf.setFontSize(8);
-    pdf.setTextColor(220, 220, 220);
-    pdf.text(`ORDER #${orderNumber}`, pageWidth - margin, 25, { align: "right" });
+    pdf.setTextColor(255, 255, 255);
+    const headerOrder = `ORDER #${orderNumber}`;
+    pdf.text(pdf.splitTextToSize(headerOrder, 35).slice(0, 1), pageWidth - margin - 19.5, 26.2, { align: "center" });
   }
 
   function drawItemsHeader(atY) {
@@ -127,7 +141,11 @@ async function downloadReceiptPdf(order) {
   pdf.setFontSize(8.5);
   pdf.setTextColor(...muted);
   pdf.text(date, pageWidth - margin, y, { align: "right" });
-  y += 8;
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...gold);
+  pdf.text(`Order #${orderNumber}`, margin, y + 6);
+  y += 12;
 
   const cardY = y;
   pdf.setFillColor(...pale);
