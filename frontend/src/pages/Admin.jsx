@@ -26,6 +26,7 @@ function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
   const [notice, setNotice] = useState("");
 
   const loadDashboard = useCallback(async () => {
@@ -88,6 +89,33 @@ function Admin() {
       setError(err.message || "Could not update order status.");
     } finally {
       setUpdatingId(null);
+    }
+  }
+
+  async function deleteOrder(orderId) {
+    const confirmed = window.confirm(
+      `Delete order #${orderId}? This permanently removes the order and its items and cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(orderId);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch(`${API_URL}/api/admin/orders/${orderId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "Could not delete order.");
+
+      setOrders((current) => current.filter((order) => order.id !== orderId));
+      setNotice(result.message || `Order #${orderId} deleted.`);
+      await loadMetricsOnly();
+    } catch (err) {
+      setError(err.message || "Could not delete order.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -176,7 +204,17 @@ function Admin() {
                       {STATUSES.map((status) => <option value={status} key={status}>{readableStatus(status)}</option>)}
                     </select>
                   </label>
-                  <Link to={`/orders/${order.id}`} className="admin-view-link">View order →</Link>
+                  <div className="admin-order-card__action-links">
+                    <Link to={`/orders/${order.id}`} className="admin-view-link">View order →</Link>
+                    <button
+                      type="button"
+                      className="admin-delete-order"
+                      onClick={() => deleteOrder(order.id)}
+                      disabled={deletingId === order.id || updatingId === order.id}
+                    >
+                      {deletingId === order.id ? "Deleting…" : "Delete order"}
+                    </button>
+                  </div>
                 </div>
               </article>
             ))}
