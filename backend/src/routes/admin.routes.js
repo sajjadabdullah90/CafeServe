@@ -46,6 +46,31 @@ router.get("/orders", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
+// Delete an order and its order items. This action is restricted to admins.
+router.delete("/orders/:id", requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id < 1) {
+    return res.status(400).json({ status: "error", message: "Invalid order ID." });
+  }
+
+  try {
+    const existing = await prisma.order.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!existing) {
+      return res.status(404).json({ status: "error", message: "Order not found." });
+    }
+
+    await prisma.order.delete({ where: { id } });
+    return res.json({ status: "success", message: `Order #${id} deleted.` });
+  } catch (error) {
+    console.error("Failed to delete order:", error);
+    return res.status(500).json({ status: "error", message: "Could not delete this order." });
+  }
+});
+
 // Update an order's lifecycle status. The server validates allowed states.
 router.patch("/orders/:id/status", requireAuth, requireAdmin, async (req, res) => {
   const id = Number(req.params.id);
