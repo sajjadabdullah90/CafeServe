@@ -44,22 +44,29 @@ async function downloadReceiptPdf(orderId) {
   if (!receipt) throw new Error("Receipt is not ready yet.");
 
   const html2pdf = await loadHtml2Pdf();
-  document.body.classList.add("receipt-pdf-export");
+  const exportHost = document.createElement("div");
+  exportHost.className = "receipt-pdf-export";
+  exportHost.setAttribute("aria-hidden", "true");
+  exportHost.style.cssText = "position:fixed;left:-10000px;top:0;width:794px;background:#fff;z-index:-1;pointer-events:none;";
+  const exportReceipt = receipt.cloneNode(true);
+  exportHost.appendChild(exportReceipt);
+  document.body.appendChild(exportHost);
+
   try {
-    await document.fonts?.ready;
+    if (document.fonts?.ready) await document.fonts.ready;
     await html2pdf()
       .set({
         margin: [10, 10, 12, 10],
         filename: `CafeServe-Receipt-${orderId}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", scrollY: 0 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", scrollX: 0, scrollY: 0, windowWidth: 794 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["css", "legacy"] },
       })
-      .from(receipt)
+      .from(exportReceipt)
       .save();
   } finally {
-    document.body.classList.remove("receipt-pdf-export");
+    exportHost.remove();
   }
 }
 
