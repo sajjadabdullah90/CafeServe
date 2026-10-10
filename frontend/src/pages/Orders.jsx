@@ -267,9 +267,11 @@ function Orders() {
   useEffect(() => {
     if (!isAuthenticated || !token) return;
     const controller = new AbortController();
-    async function loadOrders() {
-      setStatus("loading");
-      setError("");
+    async function loadOrders(silent = false) {
+      if (!silent) {
+        setStatus("loading");
+        setError("");
+      }
       try {
         const endpoint = id ? `${API_URL}/api/orders/${id}` : `${API_URL}/api/orders`;
         const response = await fetch(endpoint, {
@@ -281,15 +283,22 @@ function Orders() {
         const data = id ? [result.data] : result.data;
         setOrders(Array.isArray(data) ? data : []);
         setStatus("success");
+        if (silent) setError("");
       } catch (err) {
-        if (err.name !== "AbortError") {
+        if (err.name !== "AbortError" && !silent) {
           setError(err.message || "Could not load your orders.");
           setStatus("error");
         }
       }
     }
     loadOrders();
-    return () => controller.abort();
+    // Refresh order statuses in the background so customers see admin updates
+    // without manually reloading the page. A short poll works with Vercel serverless.
+    const refreshInterval = window.setInterval(() => loadOrders(true), 5000);
+    return () => {
+      window.clearInterval(refreshInterval);
+      controller.abort();
+    };
   }, [id, token, isAuthenticated]);
 
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: id ? `/orders/${id}` : "/orders" }} />;
