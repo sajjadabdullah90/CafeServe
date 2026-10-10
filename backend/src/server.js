@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET.includes("REPLACE_WITH")) {
   throw new Error("JWT_SECRET must be configured with at least 32 characters before starting CafeServe.");
 }
 
