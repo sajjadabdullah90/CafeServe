@@ -2563,20 +2563,217 @@ button {
   line-height: 1.5;
 }
 
-/* Clean white canvas for HTML-to-PDF export; the on-screen receipt stays dark. */
+/* PDF export: fixed A4-friendly canvas with explicit colors and layout.
+   These rules affect only the off-screen clone, never the live receipt. */
 .receipt-pdf-export {
-  background: #ffffff !important;
-  color: #171717 !important;
+  position: fixed !important;
+  left: -10000px !important;
+  top: 0 !important;
+  width: 794px !important;
+  background: #fff !important;
+  color: #202020 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.receipt-pdf-export *,
+.receipt-pdf-export *::before,
+.receipt-pdf-export *::after {
+  box-sizing: border-box !important;
 }
 .receipt-pdf-export .receipt-print-area {
+  display: block !important;
+  width: 794px !important;
+  max-width: none !important;
+  min-width: 0 !important;
   margin: 0 !important;
-  padding: 12mm !important;
+  padding: 42px !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: #ffffff !important;
-  color: #171717 !important;
-  width: 100% !important;
+  background: #fff !important;
+  color: #202020 !important;
   box-shadow: none !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+.receipt-pdf-export .receipt-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 0 0 22px !important;
+  border-bottom: 1px solid #e3d3ba !important;
+}
+.receipt-pdf-export .receipt-brand__mark {
+  display: grid !important;
+  width: 48px !important;
+  height: 48px !important;
+  flex: 0 0 48px !important;
+  place-items: center !important;
+  border-radius: 10px !important;
+  background: #e9b873 !important;
+  color: #20160c !important;
+}
+.receipt-pdf-export .receipt-brand > div {
+  display: flex !important;
+  min-width: 0 !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+.receipt-pdf-export .receipt-brand > div strong,
+.receipt-pdf-export .receipt-heading h2,
+.receipt-pdf-export .receipt-customer-grid strong,
+.receipt-pdf-export .receipt-table-row > strong,
+.receipt-pdf-export .receipt-totals strong,
+.receipt-pdf-export .receipt-footer > strong {
+  color: #202020 !important;
+}
+.receipt-pdf-export .receipt-brand > div strong {
+  font-size: 20px !important;
+}
+.receipt-pdf-export .receipt-brand > div span,
+.receipt-pdf-export .receipt-label,
+.receipt-pdf-export .receipt-heading > div > span,
+.receipt-pdf-export .receipt-customer-grid > div > span,
+.receipt-pdf-export .receipt-table-heading,
+.receipt-pdf-export .receipt-footer > span {
+  color: #80613a !important;
+}
+.receipt-pdf-export .receipt-brand > div span,
+.receipt-pdf-export .receipt-label,
+.receipt-pdf-export .receipt-heading > div > span,
+.receipt-pdf-export .receipt-customer-grid > div > span,
+.receipt-pdf-export .receipt-footer > span {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+}
+.receipt-pdf-export .receipt-label {
+  margin-left: auto !important;
+  text-align: right !important;
+}
+.receipt-pdf-export .receipt-heading {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 24px 0 !important;
+}
+.receipt-pdf-export .receipt-heading h2 {
+  margin: 7px 0 4px !important;
+  font-size: 25px !important;
+}
+.receipt-pdf-export .receipt-heading p,
+.receipt-pdf-export .receipt-customer-grid p,
+.receipt-pdf-export .receipt-table-row > span,
+.receipt-pdf-export .receipt-totals > div,
+.receipt-pdf-export .receipt-footer p {
+  color: #5e5a54 !important;
+}
+.receipt-pdf-export .receipt-heading p,
+.receipt-pdf-export .receipt-customer-grid p {
+  margin-top: 5px !important;
+  font-size: 12px !important;
+  overflow-wrap: anywhere !important;
+}
+.receipt-pdf-export .receipt-status {
+  color: #5c451e !important;
+  border: 1px solid #dfc28f !important;
+  background: #fff4dc !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.receipt-pdf-export .receipt-customer-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 22px !important;
+  padding: 18px 0 !important;
+  border-top: 1px solid #e6e1d8 !important;
+  border-bottom: 1px solid #e6e1d8 !important;
+}
+.receipt-pdf-export .receipt-customer-grid > div {
+  display: flex !important;
+  min-width: 0 !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+.receipt-pdf-export .receipt-customer-grid strong {
+  margin-top: 8px !important;
+  overflow-wrap: anywhere !important;
+}
+.receipt-pdf-export .receipt-items {
+  padding: 20px 0 8px !important;
+}
+.receipt-pdf-export .receipt-table-heading,
+.receipt-pdf-export .receipt-table-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 44px 105px 110px !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.receipt-pdf-export .receipt-table-heading {
+  padding: 0 0 12px !important;
+  color: #80613a !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: .5px !important;
+}
+.receipt-pdf-export .receipt-table-heading span:not(:first-child),
+.receipt-pdf-export .receipt-table-row > span,
+.receipt-pdf-export .receipt-table-row > strong:last-child {
+  text-align: right !important;
+}
+.receipt-pdf-export .receipt-table-row {
+  padding: 13px 0 !important;
+  border-top: 1px solid #eee8df !important;
+  font-size: 12px !important;
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+.receipt-pdf-export .receipt-table-row > strong:first-child {
+  overflow-wrap: anywhere !important;
+}
+.receipt-pdf-export .receipt-totals {
+  display: grid !important;
+  gap: 10px !important;
+  width: 330px !important;
+  margin: 10px 0 0 auto !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #e3d3ba !important;
+}
+.receipt-pdf-export .receipt-totals > div {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  font-size: 12px !important;
+}
+.receipt-pdf-export .receipt-totals strong {
+  text-align: right !important;
+}
+.receipt-pdf-export .receipt-totals .receipt-grand-total {
+  margin-top: 4px !important;
+  padding-top: 13px !important;
+  border-top: 1px solid #e3d3ba !important;
+  color: #6f4c1d !important;
+  font-weight: 750 !important;
+}
+.receipt-pdf-export .receipt-grand-total strong {
+  color: #8a5b1d !important;
+  font-size: 18px !important;
+}
+.receipt-pdf-export .receipt-footer {
+  margin-top: 24px !important;
+  padding-top: 18px !important;
+  border-top: 1px dashed #d9c6a8 !important;
+  text-align: center !important;
+}
+.receipt-pdf-export .receipt-footer p {
+  max-width: 520px !important;
+  margin: 9px auto 12px !important;
+  font-size: 11px !important;
+  line-height: 1.6 !important;
+}
+.receipt-pdf-export .receipt-actions {
+  display: none !important;
 }
 .receipt-pdf-export .receipt-brand,
 .receipt-pdf-export .receipt-customer-grid,
@@ -2584,36 +2781,9 @@ button {
 .receipt-pdf-export .receipt-totals,
 .receipt-pdf-export .receipt-footer,
 .receipt-pdf-export .receipt-table-row {
-  break-inside: avoid;
-  page-break-inside: avoid;
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
 }
-.receipt-pdf-export .receipt-brand,
-.receipt-pdf-export .receipt-customer-grid,
-.receipt-pdf-export .receipt-table-row,
-.receipt-pdf-export .receipt-totals,
-.receipt-pdf-export .receipt-footer {
-  border-color: #ded6ca !important;
-}
-.receipt-pdf-export .receipt-brand__mark { background: #e9b873 !important; }
-.receipt-pdf-export .receipt-brand > div strong,
-.receipt-pdf-export .receipt-heading h2,
-.receipt-pdf-export .receipt-customer-grid strong,
-.receipt-pdf-export .receipt-table-row > strong,
-.receipt-pdf-export .receipt-totals strong,
-.receipt-pdf-export .receipt-footer > strong { color: #171717 !important; }
-.receipt-pdf-export .receipt-brand > div span,
-.receipt-pdf-export .receipt-label,
-.receipt-pdf-export .receipt-heading > div > span,
-.receipt-pdf-export .receipt-customer-grid > div > span,
-.receipt-pdf-export .receipt-table-heading,
-.receipt-pdf-export .receipt-footer > span { color: #78603f !important; }
-.receipt-pdf-export .receipt-heading p,
-.receipt-pdf-export .receipt-customer-grid p,
-.receipt-pdf-export .receipt-table-row > span,
-.receipt-pdf-export .receipt-totals > div,
-.receipt-pdf-export .receipt-footer p { color: #55504a !important; }
-.receipt-pdf-export .receipt-grand-total strong { color: #8a5b1d !important; }
-.receipt-pdf-export .receipt-actions { display: none !important; }
 @media (max-width: 560px) {
   .receipt-actions .receipt-print-button { width: 100%; max-width: none; }
 }
