@@ -2137,3 +2137,71 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     width: 100%;
   }
 }
+
+
+/* Printable CafeServe order receipt */
+.receipt-print-area {
+  margin-top: 1.5rem;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid rgba(233,184,115,.2);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+  color: #f8f4ed;
+}
+.receipt-brand { display: flex; align-items: center; gap: .85rem; padding-bottom: 1.4rem; border-bottom: 1px solid rgba(233,184,115,.2); }
+.receipt-brand__mark { display: grid; width: 3rem; height: 3rem; flex: 0 0 auto; place-items: center; border-radius: 11px; background: linear-gradient(135deg,#e9b873,#b87934); color: #20160c; font-weight: 900; letter-spacing: -.06em; }
+.receipt-brand > div { display: flex; min-width: 0; flex-direction: column; gap: .25rem; }
+.receipt-brand > div strong { font-size: 1.2rem; letter-spacing: -.04em; }
+.receipt-brand > div span, .receipt-label, .receipt-heading > div > span, .receipt-customer-grid > div > span { color: #c2a77e; font-size: .62rem; font-weight: 750; letter-spacing: .12em; }
+.receipt-label { margin-left: auto; text-align: right; }
+.receipt-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.5rem 0; }
+.receipt-heading h2 { margin: .45rem 0 .3rem; font-size: clamp(1.5rem,4vw,2rem); letter-spacing: -.05em; }
+.receipt-heading p, .receipt-customer-grid p { margin-top: .35rem; color: #aaa69f; font-size: .84rem; line-height: 1.6; overflow-wrap: anywhere; }
+.receipt-customer-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; padding: 1.2rem 0; border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); }
+.receipt-customer-grid > div { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; }
+.receipt-customer-grid strong { margin-top: .55rem; overflow-wrap: anywhere; }
+.receipt-items { padding: 1.2rem 0 .5rem; }
+.receipt-table-heading, .receipt-table-row { display: grid; grid-template-columns: minmax(0,1fr) 3rem minmax(5rem,.65fr) minmax(5.5rem,.75fr); align-items: center; gap: .65rem; }
+.receipt-table-heading { padding: 0 0 .8rem; color: #b8aa96; font-size: .61rem; font-weight: 750; letter-spacing: .06em; }
+.receipt-table-heading span:not(:first-child), .receipt-table-row > span, .receipt-table-row > strong:last-child { text-align: right; }
+.receipt-table-row { padding: .85rem 0; border-top: 1px solid rgba(255,255,255,.06); font-size: .83rem; }
+.receipt-table-row > strong:first-child { overflow-wrap: anywhere; }
+.receipt-table-row > span { color: #bcb6ad; }
+.receipt-totals { display: grid; gap: .75rem; width: min(100%, 330px); margin: .5rem 0 0 auto; padding-top: 1rem; border-top: 1px solid rgba(233,184,115,.2); }
+.receipt-totals > div { display: flex; justify-content: space-between; gap: 1rem; color: #bcb6ad; font-size: .88rem; }
+.receipt-totals strong { color: #f8f4ed; text-align: right; }
+.receipt-totals .receipt-grand-total { margin-top: .25rem; padding-top: .9rem; border-top: 1px solid rgba(233,184,115,.18); color: #f4d6a4; font-weight: 750; }
+.receipt-grand-total strong { color: #e9b873; font-size: 1.25rem; }
+.receipt-footer { margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px dashed rgba(233,184,115,.25); text-align: center; }
+.receipt-footer > strong { color: #f4d6a4; }
+.receipt-footer p { max-width: 520px; margin: .55rem auto .8rem; color: #969087; font-size: .78rem; line-height: 1.6; }
+.receipt-footer > span { color: #80786c; font-size: .62rem; letter-spacing: .1em; }
+.receipt-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .8rem; margin-top: 1rem; }
+.receipt-print-button { padding: .8rem 1.05rem; border: 1px solid rgba(233,184,115,.35); border-radius: 10px; background: linear-gradient(135deg,#e9b873,#d6a15b); color: #21170d; font-weight: 750; cursor: pointer; }
+.receipt-print-button:hover { filter: brightness(1.06); }
+@media (max-width: 560px) {
+  .receipt-brand { flex-wrap: wrap; }
+  .receipt-label { width: 100%; margin-left: 0; text-align: left; }
+  .receipt-customer-grid { grid-template-columns: 1fr; }
+  .receipt-table-heading, .receipt-table-row { grid-template-columns: minmax(0,1fr) 2rem minmax(4.3rem,.65fr) minmax(4.8rem,.75fr); gap: .35rem; }
+  .receipt-table-heading { font-size: .5rem; }
+  .receipt-table-row { font-size: .72rem; }
+}
+@media print {
+  @page { size: A4; margin: 14mm; }
+  body { min-width: 0; background: #fff !important; color: #171717 !important; }
+  .navbar, .orders-intro, .orders-success, .receipt-actions, .cart-back-link, .order-card__top, .order-card__items, .order-card__bottom, .order-card__link { display: none !important; }
+  .orders-page { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  .orders-list { display: block !important; }
+  .order-card { display: block !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: #fff !important; box-shadow: none !important; }
+  .receipt-print-area { margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: #fff !important; color: #171717 !important; }
+  .receipt-brand, .receipt-customer-grid, .receipt-items, .receipt-totals, .receipt-footer { break-inside: avoid; }
+  .receipt-brand { border-bottom-color: #d8c7ad !important; }
+  .receipt-brand__mark { background: #e9b873 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .receipt-brand > div strong, .receipt-heading h2, .receipt-customer-grid strong, .receipt-table-row > strong, .receipt-totals strong, .receipt-footer > strong { color: #171717 !important; }
+  .receipt-brand > div span, .receipt-label, .receipt-heading > div > span, .receipt-customer-grid > div > span, .receipt-footer > span { color: #78603f !important; }
+  .receipt-heading p, .receipt-customer-grid p, .receipt-table-row > span, .receipt-totals > div, .receipt-footer p { color: #555 !important; }
+  .receipt-customer-grid, .receipt-table-row, .receipt-totals, .receipt-footer { border-color: #ddd !important; }
+  .receipt-grand-total strong { color: #76501d !important; }
+  .receipt-status { color: #333 !important; border-color: #bbb !important; background: #f4f4f4 !important; }
+}
