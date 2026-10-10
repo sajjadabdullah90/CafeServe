@@ -16,43 +16,51 @@ function readableStatus(status) {
   return String(status || "PENDING").toLowerCase().replaceAll("_", " ").replace(/^\w/, (letter) => letter.toUpperCase());
 }
 
-function downloadReceiptPdf() {
-  // Keep the existing, carefully styled HTML receipt and let the browser export it.
-  window.print();
+let html2pdfLoader;
+
+function loadHtml2Pdf() {
+  if (!html2pdfLoader) {
+    html2pdfLoader = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-html2pdf="true"]');
+      if (existing && window.html2pdf) return resolve(window.html2pdf);
+
+      const script = existing || document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.3/dist/html2pdf.bundle.min.js";
+      script.async = true;
+      script.dataset.html2pdf = "true";
+      script.onload = () => window.html2pdf ? resolve(window.html2pdf) : reject(new Error("PDF tool did not load."));
+      script.onerror = () => reject(new Error("PDF tool couldn't load. Check your internet connection and try again."));
+      if (!existing) document.head.appendChild(script);
+    }).catch((error) => {
+      html2pdfLoader = null;
+      throw error;
+    });
+  }
+  return html2pdfLoader;
 }
 
-async function shareReceipt(order) {
-  const items = order.items
-    .map((item) => `• ${item.quantity} × ${item.menuItem?.name || "Menu item"} — ${formatPrice(Number(item.price) * item.quantity)}`)
-    .join("\n");
-  const text = [
-    `CafeServe — Order Receipt #${order.id}`,
-    `Date: ${formatDate(order.createdAt)}`,
-    `Status: ${readableStatus(order.status)}`,
-    "",
-    "Items:",
-    items,
-    "",
-    `Total: ${formatPrice(order.total)}`,
-    `Delivery address: ${order.deliveryAddress || "—"}`,
-  ].join("\n");
+async function downloadReceiptPdf(orderId) {
+  const receipt = document.querySelector(".receipt-print-area");
+  if (!receipt) throw new Error("Receipt is not ready yet.");
 
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: `CafeServe Receipt #${order.id}`, text });
-      return "Receipt shared.";
-    } catch (error) {
-      if (error.name === "AbortError") return "";
-      throw error;
-    }
+  const html2pdf = await loadHtml2Pdf();
+  document.body.classList.add("receipt-pdf-export");
+  try {
+    await document.fonts?.ready;
+    await html2pdf()
+      .set({
+        margin: [10, 10, 12, 10],
+        filename: `CafeServe-Receipt-${orderId}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", scrollY: 0 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"] },
+      })
+      .from(receipt)
+      .save();
+  } finally {
+    document.body.classList.remove("receipt-pdf-export");
   }
-
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return "Receipt details copied. You can paste them into a message.";
-  }
-
-  throw new Error("Sharing isn't supported in this browser. Use Download PDF instead.");
 }
 
 function Orders() {
@@ -63,7 +71,7 @@ function Orders() {
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
   const [receiptMessage, setReceiptMessage] = useState("");
-  const [sharing, setSharing] = useState(false);
+  const [downloadingReceipt, setDownloadingReceipt] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;
@@ -127,34 +135,28 @@ function Orders() {
               )}
               {id && (
                 <div className="receipt-actions">
-                  <div className="receipt-action-buttons">
-                    <button className="receipt-print-button" type="button" onClick={downloadReceiptPdf}>
-                      Download PDF
-                    </button>
-                    <button
-                      className="receipt-share-button"
-                      type="button"
-                      disabled={sharing}
-                      onClick={async () => {
-                        setSharing(true);
-                        setReceiptMessage("");
-                        try {
-                          const message = await shareReceipt(order);
-                          if (message) setReceiptMessage(message);
-                        } catch (shareError) {
-                          setReceiptMessage(shareError.message || "Could not share this receipt.");
-                        } finally {
-                          setSharing(false);
-                        }
-                      }}
-                    >
-                      {sharing ? "Opening share…" : "Share receipt"}
-                    </button>
-                  </div>
-                  <p className="receipt-save-hint">Download PDF opens your device’s print/export options. Share receipt opens the share sheet where supported.</p>
-                  {receiptMessage && <p className="receipt-action-message" role="status">{receiptMessage}</p>}
+                  <button
+                    className="receipt-print-button"
+                    type="button"
+                    disabled={downloadingReceipt}
+                    onClick={async () => {
+                      setDownloadingReceipt(true);
+                      setReceiptMessage("");
+                      try {
+                        await downloadReceiptPdf(order.id);
+                      } catch (pdfError) {
+                        setReceiptMessage(pdfError.message || "Could not create the PDF. Please try again.");
+                      } finally {
+                        setDownloadingReceipt(false);
+                      }
+                    }}
+                  >
+                    {downloadingReceipt ? "Creating PDF…" : "Download Receipt PDF"}
+                  </button>
+                  <p className="receipt-save-hint">Downloads a formatted PDF directly to your device.</p>
+                  {receiptMessage && <p className="receipt-action-message" role="alert">{receiptMessage}</p>}
                   <Link className="cart-back-link" to="/orders">← All orders</Link>
-                </div>
+                </div>          </div>
               )}
               {id && (
                 <div className="receipt-print-area">
