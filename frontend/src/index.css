@@ -2987,3 +2987,185 @@ button {
 @media (max-width:760px) { .hero--luxury { grid-template-columns:minmax(0,1fr); gap:1rem; padding:4rem 0 2.5rem; } .hero--luxury h1 { font-size:clamp(3.5rem,14vw,5.3rem); } .hero__visual--luxury { min-height:390px; margin:.5rem 0 1rem; } .hero__image-shell { width:min(80%,390px); height:390px; } .hero__side-image--pizza { left:0; top:2rem; } .hero__side-image--coffee { right:0; top:3rem; } .hero__floating-note { right:0; bottom:1.5rem; } .signature-strip__heading { align-items:flex-start; flex-direction:column; } .signature-strip__items { grid-template-columns:minmax(0,1fr); } .signature-tile { min-height:245px; } .home--luxury .features { padding-top:1rem; } }
 @media (max-width:420px) { .hero__visual--luxury { min-height:330px; } .hero__image-shell { height:320px; } .hero__side-image { width:78px; height:94px; } .hero__floating-note { bottom:.7rem; padding:.65rem .75rem; } .hero--luxury .hero__trust-row { gap:.55rem .8rem; } .hero--luxury .hero__trust-row > span { font-size:.66rem; } }
 @media (prefers-reduced-motion:reduce) { .hero--luxury .hero__content,.hero__visual--luxury,.hero__food-image,.hero__visual-glow,.hero__floating-note,.signature-tile { animation:none !important; } .hero__button,.signature-tile img,.feature-card,.hero__side-image { transition:none !important; } }
+
+
+/* Refined editorial homepage: fewer effects, stronger art direction. */
+.home--luxury {
+  width: min(1320px, 92%);
+}
+.hero--luxury {
+  min-height: 650px;
+  grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  gap: clamp(2.5rem, 6vw, 6rem);
+  padding: 4rem 0 5rem;
+}
+.hero--luxury .hero__content {
+  max-width: 540px;
+  animation: editorial-rise .65s ease-out both;
+}
+.hero--luxury .hero__eyebrow {
+  margin-bottom: 1.6rem;
+  color: #d9b47c;
+  font-size: .68rem;
+  letter-spacing: .19em;
+}
+.hero__eyebrow-dot { display: none; }
+.hero--luxury h1 {
+  max-width: 560px;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: clamp(3.6rem, 6.5vw, 6.2rem);
+  font-weight: 500;
+  line-height: .99;
+  letter-spacing: -.075em;
+}
+.hero--luxury h1 span {
+  color: #d9b47c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+.hero--luxury .hero__description {
+  max-width: 440px;
+  margin: 1.5rem 0 2rem;
+  color: #aaa49b;
+  font-size: .98rem;
+  line-height: 1.85;
+}
+.hero--luxury .hero__button {
+  border-radius: 2px;
+  background: #d9b47c;
+  border-color: #d9b47c;
+  box-shadow: none;
+  font-size: .85rem;
+  font-weight: 700;
+}
+.hero--luxury .hero__button:hover {
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+.hero__secondary-button { font-size: .83rem; color: #d5cec2; }
+.hero--luxury .hero__trust-row {
+  gap: .65rem 1rem;
+  margin-top: 2rem;
+}
+.hero--luxury .hero__trust-row > span {
+  font-size: .68rem;
+  color: #8e8981;
+}
+.hero--luxury .hero__trust-row > span > span { color: #d9b47c; }
+.hero__visual--luxury {
+  min-height: 560px;
+  animation: editorial-fade .8s .08s ease-out both;
+}
+.hero__visual-glow,
+.hero__floating-note,
+.hero__side-image { display: none; }
+.hero__image-shell {
+  width: 100%;
+  max-width: 650px;
+  height: 560px;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: none;
+  transform: none;
+  background: #19130d;
+}
+.hero__food-image { animation: none; }
+.hero__image-shade {
+  inset: 45% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(8,8,7,.78));
+}
+.hero__image-caption {
+  right: 1.6rem;
+  bottom: 1.5rem;
+  left: 1.6rem;
+}
+.hero__caption-mark { display: none; }
+.hero__image-caption strong {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+}
+.hero__image-caption small { color: #ddd0bd; font-size: .73rem; }
+.signature-strip {
+  padding: 2.7rem 0 4.5rem;
+  border-top-color: rgba(255,255,255,.1);
+}
+.signature-strip__heading {
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.signature-strip__heading > span,
+.signature-tile > div > span {
+  color: #bda078;
+  font-size: .61rem;
+  letter-spacing: .12em;
+}
+.signature-strip__heading h2 {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: -.055em;
+}
+.signature-strip__items { gap: 1.25rem; }
+.signature-tile {
+  min-height: 260px;
+  border: 0;
+  background: #15120e;
+  animation: none;
+}
+.signature-tile img { opacity: .86; }
+.signature-tile::after {
+  inset: 35% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(8,7,6,.86));
+}
+.signature-tile h3 {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 1.18rem;
+  font-weight: 500;
+  letter-spacing: -.025em;
+}
+.signature-strip__link {
+  padding-bottom: .25rem;
+  border-bottom: 1px solid rgba(217,180,124,.4);
+}
+.home--luxury .feature-card {
+  border-radius: 2px;
+  background: transparent;
+  border-color: rgba(255,255,255,.1);
+}
+.home--luxury .feature-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.025);
+}
+.home--luxury .feature-card h2 {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+@keyframes editorial-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes editorial-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 900px) {
+  .hero--luxury { gap: 2rem; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); }
+  .hero__visual--luxury { min-height: 450px; }
+  .hero__image-shell { height: 450px; }
+}
+@media (max-width: 760px) {
+  .hero--luxury { grid-template-columns: minmax(0,1fr); gap: 2rem; padding: 3.5rem 0 3rem; }
+  .hero--luxury .hero__content { max-width: 620px; }
+  .hero--luxury h1 { font-size: clamp(3.4rem, 13vw, 5rem); }
+  .hero__visual--luxury { min-height: 360px; }
+  .hero__image-shell { width: 100%; height: min(115vw, 480px); max-width: none; }
+  .signature-strip__heading { align-items: flex-start; }
+  .signature-strip__items { grid-template-columns: minmax(0,1fr); }
+  .signature-tile { min-height: 260px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero--luxury .hero__content, .hero__visual--luxury { animation: none !important; }
+}
