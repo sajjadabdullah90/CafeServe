@@ -2528,3 +2528,12 @@ button {
     gap: .25rem;
   }
 }
+
+
+/* Guidance for saving a receipt as PDF */
+.receipt-save-hint {
+  margin: -.25rem 0 0;
+  color: #bcb6ad;
+  font-size: .82rem;
+  line-height: 1.5;
+}
