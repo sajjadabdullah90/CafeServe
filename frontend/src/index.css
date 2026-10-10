@@ -2564,7 +2564,7 @@ button {
 }
 
 /* Clean white canvas for HTML-to-PDF export; the on-screen receipt stays dark. */
-body.receipt-pdf-export {
+.receipt-pdf-export {
   background: #ffffff !important;
   color: #171717 !important;
 }
