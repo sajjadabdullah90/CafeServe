@@ -87,8 +87,9 @@ function Orders() {
               {id && (
                 <div className="receipt-actions">
                   <button className="receipt-print-button" type="button" onClick={() => window.print()}>
-                    Print receipt / Save PDF
+                    Save Receipt as PDF
                   </button>
+                  <p className="receipt-save-hint">In the dialog, choose “Save as PDF” to download your receipt.</p>
                   <Link className="cart-back-link" to="/orders">← All orders</Link>
                 </div>
               )}
