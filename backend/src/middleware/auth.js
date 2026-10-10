@@ -20,7 +20,7 @@ async function requireAuth(req, res, next) {
   try {
     const currentUser = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { id: true, isActive: true },
+      select: { id: true, role: true, isActive: true },
     });
     if (!currentUser) {
       return res.status(401).json({ status: "error", message: "Account not found. Please sign in again." });
@@ -28,6 +28,8 @@ async function requireAuth(req, res, next) {
     if (!currentUser.isActive) {
       return res.status(403).json({ status: "error", message: "This account has been disabled. Contact CafeServe support." });
     }
+    // Always use the current database role, not a potentially stale JWT role claim.
+    req.user.role = currentUser.role;
     return next();
   } catch (error) {
     console.error("Failed to verify account status:", error);
