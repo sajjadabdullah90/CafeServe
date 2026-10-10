@@ -17,8 +17,42 @@ function readableStatus(status) {
 }
 
 function downloadReceiptPdf() {
-  // Use the browser's print renderer so the existing receipt CSS/layout is preserved.
+  // Keep the existing, carefully styled HTML receipt and let the browser export it.
   window.print();
+}
+
+async function shareReceipt(order) {
+  const items = order.items
+    .map((item) => `• ${item.quantity} × ${item.menuItem?.name || "Menu item"} — ${formatPrice(Number(item.price) * item.quantity)}`)
+    .join("\\n");
+  const text = [
+    `CafeServe — Order Receipt #${order.id}`,
+    `Date: ${formatDate(order.createdAt)}`,
+    `Status: ${readableStatus(order.status)}`,
+    "",
+    "Items:",
+    items,
+    "",
+    `Total: ${formatPrice(order.total)}`,
+    `Delivery address: ${order.deliveryAddress || "—"}`,
+  ].join("\\n");
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: `CafeServe Receipt #${order.id}`, text });
+      return "Receipt shared.";
+    } catch (error) {
+      if (error.name === "AbortError") return "";
+      throw error;
+    }
+  }
+
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return "Receipt details copied. You can paste them into a message.";
+  }
+
+  throw new Error("Sharing isn't supported in this browser. Use Download PDF instead.");
 }
 
 function Orders() {
@@ -28,6 +62,8 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
+  const [receiptMessage, setReceiptMessage] = useState("");
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || !token) return;
@@ -91,10 +127,32 @@ function Orders() {
               )}
               {id && (
                 <div className="receipt-actions">
-                  <button className="receipt-print-button" type="button" onClick={() => downloadReceiptPdf()}>
-                    Save Receipt as PDF
-                  </button>
-                  <p className="receipt-save-hint">In the print window, choose “Save as PDF” as the destination to download the formatted receipt.</p>
+                  <div className="receipt-action-buttons">
+                    <button className="receipt-print-button" type="button" onClick={downloadReceiptPdf}>
+                      Download PDF
+                    </button>
+                    <button
+                      className="receipt-share-button"
+                      type="button"
+                      disabled={sharing}
+                      onClick={async () => {
+                        setSharing(true);
+                        setReceiptMessage("");
+                        try {
+                          const message = await shareReceipt(order);
+                          if (message) setReceiptMessage(message);
+                        } catch (shareError) {
+                          setReceiptMessage(shareError.message || "Could not share this receipt.");
+                        } finally {
+                          setSharing(false);
+                        }
+                      }}
+                    >
+                      {sharing ? "Opening share…" : "Share receipt"}
+                    </button>
+                  </div>
+                  <p className="receipt-save-hint">Download PDF opens your device’s print/export options. Share receipt opens the share sheet where supported.</p>
+                  {receiptMessage && <p className="receipt-action-message" role="status">{receiptMessage}</p>}
                   <Link className="cart-back-link" to="/orders">← All orders</Link>
                 </div>
               )}
