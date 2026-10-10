@@ -77,7 +77,7 @@ async function updateUserRole(req, res) {
   }
 
   try {
-    const target = await prisma.user.findUnique({ where: { id }, select: { id: true, role: true } });
+    const target = await prisma.user.findUnique({ where: { id }, select: { id: true, role: true, isActive: true } });
     if (!target) return res.status(404).json({ status: "error", message: "User not found." });
 
     if (target.role === "ADMIN" && target.isActive && role === "CUSTOMER") {
