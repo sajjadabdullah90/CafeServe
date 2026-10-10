@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prisma");
 
-const JWT_SECRET = process.env.JWT_SECRET || "cafeserve-local-development-secret-change-before-deploy";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 async function requireAuth(req, res, next) {
   const authorization = req.headers.authorization || "";
