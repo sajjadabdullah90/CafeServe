@@ -80,8 +80,53 @@ function Orders() {
                 <div><span>Delivery address</span><p>{order.deliveryAddress}</p><small>{order.phone}</small></div>
                 <div className="order-card__total"><span>Total</span><strong>{formatPrice(order.total)}</strong></div>
               </div>
+              {id && (
+                <div className="receipt-actions">
+                  <button className="receipt-print-button" type="button" onClick={() => window.print()}>
+                    Print receipt / Save PDF
+                  </button>
+                  <Link className="cart-back-link" to="/orders">← All orders</Link>
+                </div>
+              )}
+              {id && (
+                <div className="receipt-print-area">
+                  <div className="receipt-brand">
+                    <span className="receipt-brand__mark">CS</span>
+                    <div><strong>CafeServe</strong><span>FRESHLY MADE. THOUGHTFULLY SERVED.</span></div>
+                    <span className="receipt-label">ORDER RECEIPT</span>
+                  </div>
+                  <div className="receipt-heading">
+                    <div><span>RECEIPT FOR</span><h2>Order #{order.id}</h2><p>{formatDate(order.createdAt)}</p></div>
+                    <span className={`receipt-status order-status order-status--${String(order.status).toLowerCase()}`}>{readableStatus(order.status)}</span>
+                  </div>
+                  <div className="receipt-customer-grid">
+                    <div><span>CUSTOMER</span><strong>{order.user?.name || "CafeServe customer"}</strong><p>{order.user?.email || "—"}</p></div>
+                    <div><span>DELIVERY DETAILS</span><strong>{order.phone || "—"}</strong><p>{order.deliveryAddress || "—"}</p></div>
+                  </div>
+                  <div className="receipt-items">
+                    <div className="receipt-table-heading"><span>ITEM DESCRIPTION</span><span>QTY</span><span>UNIT PRICE</span><span>AMOUNT</span></div>
+                    {order.items.map((item) => (
+                      <div className="receipt-table-row" key={item.id}>
+                        <strong>{item.menuItem?.name || "Menu item"}</strong>
+                        <span>{item.quantity}</span>
+                        <span>{formatPrice(item.price)}</span>
+                        <strong>{formatPrice(Number(item.price) * item.quantity)}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="receipt-totals">
+                    <div><span>Subtotal</span><strong>{formatPrice(order.items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0))}</strong></div>
+                    <div><span>Delivery</span><strong>Included</strong></div>
+                    <div className="receipt-grand-total"><span>Total paid / due</span><strong>{formatPrice(order.total)}</strong></div>
+                  </div>
+                  <div className="receipt-footer">
+                    <strong>Thank you for choosing CafeServe.</strong>
+                    <p>Please keep this receipt for your records. This receipt reflects the order details currently saved in CafeServe.</p>
+                    <span>ORDER #{order.id} · {formatDate(order.createdAt)}</span>
+                  </div>
+                </div>
+              )}
               {!id && <Link className="order-card__link" to={`/orders/${order.id}`}>View order details <span aria-hidden="true">→</span></Link>}
-              {id && <Link className="cart-back-link" to="/orders">← All orders</Link>}
             </article>
           ))}
         </section>
