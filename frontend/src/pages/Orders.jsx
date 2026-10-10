@@ -55,7 +55,7 @@ async function downloadReceiptPdf(order) {
   // jsPDF's built-in Helvetica fonts have limited Unicode coverage. Normalize typographic
   // punctuation to standard PDF-safe characters so labels don't lose glyphs in PDF viewers.
   const text = (value) => String(value ?? "—")
-    .replace(/[\\u0000-\\u001f]/g, " ")
+    .replace(/[\u0000-\u001f]/g, " ")
     .replace(/[’‘]/g, "'")
     .replace(/[“”]/g, '"')
     .replace(/[–—]/g, "-")
