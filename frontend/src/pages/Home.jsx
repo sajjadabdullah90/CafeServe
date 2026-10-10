@@ -1,23 +1,5 @@
 import { Link } from "react-router-dom";
 
-const signatureDishes = [
-  {
-    name: "Wood-fired pizza",
-    category: "PIZZA & PASTA",
-    image: "https://images.unsplash.com/photo-157 pizza",
-  },
-  {
-    name: "Freshly brewed",
-    category: "COFFEE & DESSERTS",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=85",
-  },
-  {
-    name: "Signature pasta",
-    category: "MADE TO SAVOUR",
-    image: "https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=700&q=85",
-  },
-];
-
 function Home() {
   return (
     <main className="home home--luxury">
