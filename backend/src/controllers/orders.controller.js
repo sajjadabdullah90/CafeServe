@@ -81,7 +81,7 @@ async function getOrders(req, res) {
   try {
     const orders = await prisma.order.findMany({
       where: req.user.role === "ADMIN" ? {} : { userId: req.user.userId },
-      include: { items: { include: { menuItem: true } } },
+      include: { user: { select: { name: true, email: true } }, items: { include: { menuItem: true } } },
       orderBy: { createdAt: "desc" },
     });
     return res.json({ status: "success", count: orders.length, data: orders });
@@ -100,7 +100,7 @@ async function getOrderById(req, res) {
   try {
     const order = await prisma.order.findUnique({
       where: { id },
-      include: { items: { include: { menuItem: true } } },
+      include: { user: { select: { name: true, email: true } }, items: { include: { menuItem: true } } },
     });
     if (!order) return res.status(404).json({ status: "error", message: "Order not found." });
     if (req.user.role !== "ADMIN" && order.userId !== req.user.userId) {
