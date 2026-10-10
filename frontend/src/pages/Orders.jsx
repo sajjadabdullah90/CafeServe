@@ -156,7 +156,7 @@ function Orders() {
                   <p className="receipt-save-hint">Downloads a formatted PDF directly to your device.</p>
                   {receiptMessage && <p className="receipt-action-message" role="alert">{receiptMessage}</p>}
                   <Link className="cart-back-link" to="/orders">← All orders</Link>
-                </div>          </div>
+                </div>
               )}
               {id && (
                 <div className="receipt-print-area">
