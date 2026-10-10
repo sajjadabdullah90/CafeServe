@@ -2102,3 +2102,38 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     font-size: 0.95rem;
   }
 }
+
+
+/* Admin order deletion action */
+.admin-order-card__action-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .85rem;
+}
+.admin-delete-order {
+  padding: .65rem .85rem;
+  border: 1px solid rgba(255,115,115,.28);
+  border-radius: 9px;
+  background: rgba(130,35,45,.12);
+  color: #ffb4b4;
+  font-size: .82rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease;
+}
+.admin-delete-order:hover:not(:disabled) {
+  border-color: rgba(255,115,115,.55);
+  background: rgba(130,35,45,.24);
+}
+.admin-delete-order:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+@media (max-width: 560px) {
+  .admin-order-card__action-links {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
