@@ -2220,3 +2220,74 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .receipt-grand-total strong { color: #76501d !important; }
   .receipt-status { color: #333 !important; border-color: #bbb !important; background: #f4f4f4 !important; }
 }
+
+/* Global responsive overflow guard: keep all pages within the viewport. */
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 320px;
+  overflow-x: clip;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+/* Allow grid and flex children to shrink instead of widening the page. */
+.home,
+.page,
+.menu-page,
+.cart-page,
+.auth-page,
+.checkout-page,
+.orders-page,
+.admin-page,
+.menu-management-page,
+.user-management-page,
+.hero,
+.features,
+.menu-grid,
+.cart-layout,
+.checkout-layout,
+.orders-list,
+.order-card,
+.receipt-print-area {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .navbar {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .navbar__brand {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .navbar__actions {
+    min-width: 0;
+    gap: .45rem;
+  }
+  .auth-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .receipt-print-area {
+    padding: .9rem;
+  }
+  .receipt-table-heading,
+  .receipt-table-row {
+    grid-template-columns: minmax(0, 1fr) 1.8rem minmax(3.7rem, .65fr) minmax(4.2rem, .75fr);
+    gap: .3rem;
+  }
+}
