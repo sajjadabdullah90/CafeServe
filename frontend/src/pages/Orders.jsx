@@ -16,65 +16,9 @@ function readableStatus(status) {
   return String(status || "PENDING").toLowerCase().replaceAll("_", " ").replace(/^\w/, (letter) => letter.toUpperCase());
 }
 
-function downloadReceiptPdf(order) {
-  const lines = [
-    "CafeServe - Order Receipt",
-    `Order #${order.id}`,
-    `Date: ${formatDate(order.createdAt)}`,
-    `Customer: ${order.user?.name || "CafeServe customer"}`,
-    `Email: ${order.user?.email || "-"}`,
-    `Phone: ${order.phone || "-"}`,
-    `Delivery: ${order.deliveryAddress || "-"}`,
-    "",
-    "ITEMS",
-    ...order.items.map((item) => `${item.quantity} x ${item.menuItem?.name || "Menu item"} | ${formatPrice(item.price)} each | ${formatPrice(Number(item.price) * item.quantity)}`),
-    "",
-    `Status: ${readableStatus(order.status)}`,
-    `Total: ${formatPrice(order.total)}`,
-    "",
-    "Thank you for choosing CafeServe."
-  ];
-  const escapePdfText = (value) => String(value)
-    .normalize("NFKD")
-    .replace(/[^\x20-\x7E]/g, "?")
-    .replace(/\\/g, "\\\\")
-    .replace(/\(/g, "\\(")
-    .replace(/\)/g, "\\)");
-  const commands = ["BT", "/F1 11 Tf", "50 790 Td", "15 TL"];
-  lines.forEach((line, index) => {
-    if (index > 0) commands.push("T*");
-    commands.push(`(${escapePdfText(line)}) Tj`);
-  });
-  commands.push("ET");
-  const stream = commands.join("\n");
-  const objects = [
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-    `<< /Length ${new TextEncoder().encode(stream).length} >>\nstream\n${stream}\nendstream`
-  ];
-  let pdf = "%PDF-1.4\n";
-  const offsets = [0];
-  objects.forEach((object, index) => {
-    offsets.push(new TextEncoder().encode(pdf).length);
-    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
-  });
-  const xrefOffset = new TextEncoder().encode(pdf).length;
-  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-  offsets.slice(1).forEach((offset) => {
-    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
-  });
-  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
-  const blob = new Blob([pdf], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = `CafeServe-Receipt-${order.id}.pdf`;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
+function downloadReceiptPdf() {
+  // Use the browser's print renderer so the existing receipt CSS/layout is preserved.
+  window.print();
 }
 
 function Orders() {
@@ -147,10 +91,10 @@ function Orders() {
               )}
               {id && (
                 <div className="receipt-actions">
-                  <button className="receipt-print-button" type="button" onClick={() => downloadReceiptPdf(order)}>
+                  <button className="receipt-print-button" type="button" onClick={() => downloadReceiptPdf()}>
                     Save Receipt as PDF
                   </button>
-                  <p className="receipt-save-hint">In the dialog, choose “Save as PDF” to download your receipt.</p>
+                  <p className="receipt-save-hint">In the print window, choose “Save as PDF” as the destination to download the formatted receipt.</p>
                   <Link className="cart-back-link" to="/orders">← All orders</Link>
                 </div>
               )}
