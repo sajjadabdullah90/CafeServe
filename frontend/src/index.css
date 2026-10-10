@@ -2107,10 +2107,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Admin order deletion action */
 .admin-order-card__action-links {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: .85rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .65rem;
 }
 .admin-delete-order {
   padding: .65rem .85rem;
@@ -2133,7 +2133,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 @media (max-width: 560px) {
   .admin-order-card__action-links {
-    justify-content: flex-start;
+    align-items: flex-start;
     width: 100%;
   }
 }
