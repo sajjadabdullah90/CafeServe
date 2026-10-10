@@ -16,60 +16,226 @@ function readableStatus(status) {
   return String(status || "PENDING").toLowerCase().replaceAll("_", " ").replace(/^\w/, (letter) => letter.toUpperCase());
 }
 
-let html2pdfLoader;
+let jsPdfLoader;
 
-function loadHtml2Pdf() {
-  if (!html2pdfLoader) {
-    html2pdfLoader = new Promise((resolve, reject) => {
-      const existing = document.querySelector('script[data-html2pdf="true"]');
-      if (existing && window.html2pdf) return resolve(window.html2pdf);
+function loadJsPdf() {
+  if (!jsPdfLoader) {
+    jsPdfLoader = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-jspdf="true"]');
+      if (existing && window.jspdf?.jsPDF) return resolve(window.jspdf.jsPDF);
 
       const script = existing || document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.3/dist/html2pdf.bundle.min.js";
-      script.async = true;
-      script.dataset.html2pdf = "true";
-      script.onload = () => window.html2pdf ? resolve(window.html2pdf) : reject(new Error("PDF tool did not load."));
-      script.onerror = () => reject(new Error("PDF tool couldn't load. Check your internet connection and try again."));
+      script.src = "https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js";
+      script.dataset.jspdf = "true";
+      script.onload = () => {
+        if (window.jspdf?.jsPDF) resolve(window.jspdf.jsPDF);
+        else reject(new Error("The PDF library loaded but was unavailable."));
+      };
+      script.onerror = () => reject(new Error("Could not load the PDF generator. Check your internet connection and try again."));
       if (!existing) document.head.appendChild(script);
-    }).catch((error) => {
-      html2pdfLoader = null;
-      throw error;
     });
   }
-  return html2pdfLoader;
+  return jsPdfLoader;
 }
 
-async function downloadReceiptPdf(orderId) {
-  const receipt = document.querySelector(".receipt-print-area");
-  if (!receipt) throw new Error("Receipt is not ready yet.");
+async function downloadReceiptPdf(order) {
+  const JsPDF = await loadJsPdf();
+  const pdf = new JsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 17;
+  const contentWidth = pageWidth - margin * 2;
+  const gold = [185, 143, 70];
+  const ink = [36, 38, 42];
+  const muted = [112, 116, 122];
+  const pale = [248, 246, 241];
+  const line = [229, 226, 219];
+  let y = 18;
 
-  const html2pdf = await loadHtml2Pdf();
-  const exportHost = document.createElement("div");
-  exportHost.className = "receipt-pdf-export";
-  exportHost.setAttribute("aria-hidden", "true");
-  exportHost.style.cssText = "position:fixed;left:-10000px;top:0;width:794px;background:#fff;z-index:-1;pointer-events:none;";
-  const exportReceipt = receipt.cloneNode(true);
-  exportHost.appendChild(exportReceipt);
-  document.body.appendChild(exportHost);
+  const text = (value) => String(value ?? "—").replace(/[\\u0000-\\u001f]/g, " ").trim() || "—";
+  const money = (value) => `Rs. ${Number(value || 0).toLocaleString("en-PK", { maximumFractionDigits: 2 })}`;
+  const date = formatDate(order.createdAt);
+  const orderNumber = text(order.id);
+  const status = readableStatus(order.status).toUpperCase();
+  const items = Array.isArray(order.items) ? order.items : [];
+  const subtotal = items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.quantity || 0), 0);
 
-  try {
-    if (document.fonts?.ready) await document.fonts.ready;
-    await html2pdf()
-      .set({
-        margin: [10, 10, 12, 10],
-        filename: `CafeServe-Receipt-${orderId}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", scrollX: 0, scrollY: 0, windowWidth: 794 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"] },
-      })
-      .from(exportReceipt)
-      .save();
-  } finally {
-    exportHost.remove();
+  function drawBrandHeader(pageLabel = "") {
+    pdf.setFillColor(...ink);
+    pdf.rect(0, 0, pageWidth, 43, "F");
+    pdf.setFillColor(...gold);
+    pdf.roundedRect(margin, 12, 17, 17, 2, 2, "F");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(12);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text("CS", margin + 8.5, 22.5, { align: "center" });
+    pdf.setFontSize(18);
+    pdf.text("CafeServe", margin + 23, 19);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(221, 221, 221);
+    pdf.text("FRESHLY PREPARED. THOUGHTFULLY SERVED.", margin + 23, 25);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text(pageLabel || "ORDER RECEIPT", pageWidth - margin, 18, { align: "right" });
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(220, 220, 220);
+    pdf.text(`ORDER #${orderNumber}`, pageWidth - margin, 25, { align: "right" });
   }
-}
 
+  function drawItemsHeader(atY) {
+    pdf.setFillColor(...pale);
+    pdf.roundedRect(margin, atY, contentWidth, 9, 1.5, 1.5, "F");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(...muted);
+    pdf.text("ITEM DESCRIPTION", margin + 3, atY + 5.8);
+    pdf.text("QTY", 133, atY + 5.8, { align: "right" });
+    pdf.text("UNIT PRICE", 158, atY + 5.8, { align: "right" });
+    pdf.text("AMOUNT", pageWidth - margin - 3, atY + 5.8, { align: "right" });
+    return atY + 9;
+  }
+
+  function newItemsPage() {
+    pdf.addPage();
+    drawBrandHeader("ORDER RECEIPT · CONTINUED");
+    y = 54;
+    y = drawItemsHeader(y);
+  }
+
+  function ensureSpace(requiredHeight, continuation = false) {
+    if (y + requiredHeight > pageHeight - 24) {
+      if (continuation) newItemsPage();
+      else {
+        pdf.addPage();
+        drawBrandHeader("ORDER RECEIPT · CONTINUED");
+        y = 55;
+      }
+    }
+  }
+
+  drawBrandHeader();
+  y = 54;
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(15);
+  pdf.setTextColor(...ink);
+  pdf.text("Order summary", margin, y);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8.5);
+  pdf.setTextColor(...muted);
+  pdf.text(date, pageWidth - margin, y, { align: "right" });
+  y += 8;
+
+  const cardY = y;
+  pdf.setFillColor(...pale);
+  pdf.roundedRect(margin, cardY, contentWidth, 30, 2, 2, "F");
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...muted);
+  pdf.text("CUSTOMER", margin + 5, cardY + 7);
+  pdf.text("DELIVERY DETAILS", margin + contentWidth / 2 + 3, cardY + 7);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...ink);
+  const customerName = text(order.user?.name || "CafeServe customer");
+  const customerEmail = text(order.user?.email || "—");
+  const phone = text(order.phone || "—");
+  const address = text(order.deliveryAddress || "—");
+  pdf.text(pdf.splitTextToSize(customerName, contentWidth / 2 - 12).slice(0, 2), margin + 5, cardY + 13);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...muted);
+  pdf.text(pdf.splitTextToSize(customerEmail, contentWidth / 2 - 12).slice(0, 2), margin + 5, cardY + 19);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...ink);
+  pdf.text(pdf.splitTextToSize(phone, contentWidth / 2 - 12).slice(0, 1), margin + contentWidth / 2 + 3, cardY + 13);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...muted);
+  pdf.text(pdf.splitTextToSize(address, contentWidth / 2 - 12).slice(0, 2), margin + contentWidth / 2 + 3, cardY + 19);
+  y = cardY + 38;
+
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(11);
+  pdf.setTextColor(...ink);
+  pdf.text("Items ordered", margin, y);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...muted);
+  pdf.text(`Status: ${status}`, pageWidth - margin, y, { align: "right" });
+  y += 6;
+  y = drawItemsHeader(y);
+
+  items.forEach((item, index) => {
+    const name = text(item.menuItem?.name || "Menu item");
+    const nameLines = pdf.splitTextToSize(name, 79).slice(0, 3);
+    const rowHeight = Math.max(11, nameLines.length * 4.2 + 5);
+    if (y + rowHeight > pageHeight - 24) newItemsPage();
+
+    if (index % 2 === 1) {
+      pdf.setFillColor(252, 251, 249);
+      pdf.rect(margin, y, contentWidth, rowHeight, "F");
+    }
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.5);
+    pdf.setTextColor(...ink);
+    pdf.text(nameLines, margin + 3, y + 5);
+    pdf.text(String(Number(item.quantity || 0)), 133, y + 5, { align: "right" });
+    pdf.text(money(item.price), 158, y + 5, { align: "right" });
+    pdf.setFont("helvetica", "bold");
+    pdf.text(money(Number(item.price || 0) * Number(item.quantity || 0)), pageWidth - margin - 3, y + 5, { align: "right" });
+    pdf.setDrawColor(...line);
+    pdf.setLineWidth(0.2);
+    pdf.line(margin, y + rowHeight, pageWidth - margin, y + rowHeight);
+    y += rowHeight;
+  });
+
+  y += 8;
+  ensureSpace(39);
+  const totalLabelX = pageWidth - margin - 56;
+  const totalValueX = pageWidth - margin - 3;
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(9);
+  pdf.setTextColor(...muted);
+  pdf.text("Subtotal", totalLabelX, y);
+  pdf.setTextColor(...ink);
+  pdf.text(money(subtotal), totalValueX, y, { align: "right" });
+  y += 7;
+  pdf.setTextColor(...muted);
+  pdf.text("Delivery", totalLabelX, y);
+  pdf.setTextColor(...ink);
+  pdf.text("Included", totalValueX, y, { align: "right" });
+  y += 5;
+  pdf.setDrawColor(...gold);
+  pdf.setLineWidth(0.5);
+  pdf.line(totalLabelX, y, totalValueX, y);
+  y += 8;
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(11);
+  pdf.setTextColor(...ink);
+  pdf.text("TOTAL", totalLabelX, y);
+  pdf.setTextColor(...gold);
+  pdf.text(money(order.total), totalValueX, y, { align: "right" });
+
+  const footerY = pageHeight - 18;
+  pdf.setDrawColor(...line);
+  pdf.setLineWidth(0.25);
+  pdf.line(margin, footerY - 5, pageWidth - margin, footerY - 5);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(8);
+  pdf.setTextColor(...ink);
+  pdf.text("Thank you for choosing CafeServe.", margin, footerY);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(7);
+  pdf.setTextColor(...muted);
+  pdf.text("Please keep this receipt for your records.", pageWidth - margin, footerY, { align: "right" });
+
+  pdf.save(`CafeServe-Receipt-${orderNumber.replace(/[^a-zA-Z0-9-_]/g, "")}.pdf`);
+}
 function Orders() {
   const { token, isAuthenticated } = useAuth();
   const { id } = useParams();
@@ -150,7 +316,7 @@ function Orders() {
                       setDownloadingReceipt(true);
                       setReceiptMessage("");
                       try {
-                        await downloadReceiptPdf(order.id);
+                        await downloadReceiptPdf(order);
                       } catch (pdfError) {
                         setReceiptMessage(pdfError.message || "Could not create the PDF. Please try again.");
                       } finally {
