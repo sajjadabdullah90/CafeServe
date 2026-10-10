@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Cart from "./pages/Cart";
@@ -34,6 +35,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Footer />
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
