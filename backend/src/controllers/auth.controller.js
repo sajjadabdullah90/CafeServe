@@ -2,9 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prisma");
 
-const JWT_SECRET =
-  process.env.JWT_SECRET ||
-  "cafeserve-local-development-secret-change-before-deploy";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 async function register(req, res) {
   const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
