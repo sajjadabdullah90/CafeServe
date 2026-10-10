@@ -2291,3 +2291,240 @@ svg {
     gap: .3rem;
   }
 }
+
+
+/* Viewport sizing fix for every route, including all admin screens. */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+}
+
+#root,
+#root > * {
+  min-width: 0;
+}
+
+main,
+section,
+article,
+aside,
+header,
+nav,
+form,
+label {
+  min-width: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+a,
+button,
+label,
+small,
+strong,
+span {
+  overflow-wrap: anywhere;
+}
+
+input,
+textarea,
+select,
+button {
+  max-width: 100%;
+}
+
+.admin-page,
+.menu-management-page,
+.user-management-page {
+  width: min(1180px, calc(100% - 3rem));
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.admin-intro,
+.menu-management-intro,
+.user-management-intro,
+.admin-orders-heading,
+.user-management-list-heading {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.admin-metrics,
+.user-management-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.admin-metric,
+.admin-orders-panel,
+.admin-order-list,
+.admin-order-card,
+.admin-order-card__top,
+.admin-order-card__details,
+.admin-order-card__actions,
+.menu-management-layout,
+.menu-management-form-panel,
+.menu-management-list-panel,
+.menu-management-list,
+.menu-management-item,
+.menu-management-item__content,
+.menu-management-item__meta,
+.menu-management-item__actions,
+.user-management-layout,
+.user-management-panel,
+.user-management-list,
+.user-management-card,
+.user-management-card__identity,
+.user-management-card__actions,
+.user-management-controls {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-order-card__details > div,
+.admin-order-card__top > div,
+.user-management-card__identity {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-order-card__details p,
+.admin-order-card__top p,
+.menu-management-item__title,
+.menu-management-item__content > p,
+.user-management-card__identity p {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.admin-filters,
+.menu-management-controls,
+.user-management-controls {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-search,
+.menu-management-search,
+.user-management-controls input {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-order-card__actions select,
+.menu-management-form input,
+.menu-management-form textarea,
+.menu-management-form select,
+.menu-management-category input,
+.user-management-form input,
+.user-management-form select,
+.user-management-controls input,
+.user-management-controls select {
+  width: 100%;
+  min-width: 0;
+}
+
+.menu-management-form__row,
+.menu-management-layout,
+.user-management-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+@media (max-width: 900px) {
+  .admin-metrics,
+  .user-management-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .menu-management-layout,
+  .user-management-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-order-card__details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-page,
+  .menu-management-page,
+  .user-management-page,
+  .checkout-page,
+  .orders-page,
+  .cart-page,
+  .menu-page {
+    width: calc(100% - 1.25rem);
+    max-width: calc(100% - 1.25rem);
+  }
+
+  .admin-intro,
+  .menu-management-intro,
+  .user-management-intro {
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-metrics,
+  .user-management-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-order-card__top,
+  .admin-order-card__actions,
+  .user-management-card {
+    grid-template-columns: minmax(0, 1fr);
+    flex-wrap: wrap;
+  }
+
+  .admin-order-card__actions {
+    align-items: stretch;
+  }
+
+  .admin-order-card__actions > *,
+  .admin-order-card__action-links {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .menu-management-form__row,
+  .user-management-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .user-management-card {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: .75rem;
+  }
+
+  .user-management-card__actions {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .admin-filters > button {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .receipt-table-heading,
+  .receipt-table-row {
+    grid-template-columns: minmax(0, 1fr) 1.5rem minmax(3.2rem, .65fr) minmax(3.7rem, .75fr);
+    gap: .25rem;
+  }
+}
