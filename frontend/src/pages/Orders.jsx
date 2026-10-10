@@ -69,17 +69,21 @@ function Orders() {
           {location.state?.justPlaced && id && <div className="orders-success" role="status"><span>✓</span><div><strong>Order placed successfully</strong><p>Your order is saved. The cafe can now confirm and prepare it.</p></div></div>}
           {orders.map((order) => (
             <article className="order-card" key={order.id}>
-              <div className="order-card__top">
-                <div><span className="order-card__eyebrow">ORDER #{order.id}</span><h2>{formatDate(order.createdAt)}</h2></div>
-                <span className={`order-status order-status--${String(order.status).toLowerCase()}`}>{readableStatus(order.status)}</span>
-              </div>
-              <div className="order-card__items">
-                {order.items.map((item) => <div className="order-card__item" key={item.id}><span>{item.quantity} × {item.menuItem?.name || "Menu item"}</span><strong>{formatPrice(Number(item.price) * item.quantity)}</strong></div>)}
-              </div>
-              <div className="order-card__bottom">
-                <div><span>Delivery address</span><p>{order.deliveryAddress}</p><small>{order.phone}</small></div>
-                <div className="order-card__total"><span>Total</span><strong>{formatPrice(order.total)}</strong></div>
-              </div>
+              {!id && (
+                <>
+                  <div className="order-card__top">
+                    <div><span className="order-card__eyebrow">ORDER #{order.id}</span><h2>{formatDate(order.createdAt)}</h2></div>
+                    <span className={`order-status order-status--${String(order.status).toLowerCase()}`}>{readableStatus(order.status)}</span>
+                  </div>
+                  <div className="order-card__items">
+                    {order.items.map((item) => <div className="order-card__item" key={item.id}><span>{item.quantity} × {item.menuItem?.name || "Menu item"}</span><strong>{formatPrice(Number(item.price) * item.quantity)}</strong></div>)}
+                  </div>
+                  <div className="order-card__bottom">
+                    <div><span>Delivery address</span><p>{order.deliveryAddress}</p><small>{order.phone}</small></div>
+                    <div className="order-card__total"><span>Total</span><strong>{formatPrice(order.total)}</strong></div>
+                  </div>
+                </>
+              )}
               {id && (
                 <div className="receipt-actions">
                   <button className="receipt-print-button" type="button" onClick={() => window.print()}>
