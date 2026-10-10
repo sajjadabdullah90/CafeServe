@@ -24,7 +24,7 @@ function downloadReceiptPdf() {
 async function shareReceipt(order) {
   const items = order.items
     .map((item) => `• ${item.quantity} × ${item.menuItem?.name || "Menu item"} — ${formatPrice(Number(item.price) * item.quantity)}`)
-    .join("\\n");
+    .join("\n");
   const text = [
     `CafeServe — Order Receipt #${order.id}`,
     `Date: ${formatDate(order.createdAt)}`,
@@ -35,7 +35,7 @@ async function shareReceipt(order) {
     "",
     `Total: ${formatPrice(order.total)}`,
     `Delivery address: ${order.deliveryAddress || "—"}`,
-  ].join("\\n");
+  ].join("\n");
 
   if (navigator.share) {
     try {
