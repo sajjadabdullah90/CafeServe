@@ -95,7 +95,7 @@ function Home() {
           <p className="section-kicker">FROM CRAVING TO CART</p>
           <h2>Good food.<br /><em>Few simple steps.</em></h2>
         </div>
-        <ol className="ordering-steps__list">
+        <ol className="ordering-steps__list ordering-steps__grid">
           <li><span>01</span><div><h3>Choose what you love</h3><p>Explore the menu at your own pace.</p></div></li>
           <li><span>02</span><div><h3>Place your order</h3><p>Add your picks to the cart and check out.</p></div></li>
           <li><span>03</span><div><h3>Follow your order</h3><p>Come back to check its progress.</p></div></li>
