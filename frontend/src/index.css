@@ -4251,3 +4251,30 @@ button, .hero__button, .cart-primary-button, .food-card__button,
   .home--editorial [data-reveal] { opacity: 1; transform: none; }
 }
 
+
+
+/* Variable-span bento rhythm for featured dishes; mobile resets to one column. */
+@media (min-width: 961px) {
+  .menu-grid .food-card:nth-child(6n + 1) {
+    display: grid;
+    grid-column: span 2;
+    grid-template-columns: minmax(0, 1.1fr) minmax(220px, .9fr);
+  }
+  .menu-grid .food-card:nth-child(6n + 1) .food-card__image-wrap {
+    height: 100%;
+    min-height: 280px;
+    aspect-ratio: auto;
+  }
+  .menu-grid .food-card:nth-child(6n + 1) .food-card__body {
+    justify-content: center;
+    padding: clamp(1.2rem, 2.5vw, 2rem);
+  }
+  .menu-grid .food-card:nth-child(6n + 1) .food-card__heading {
+    flex-direction: column;
+    gap: .5rem;
+  }
+  .menu-grid .food-card:nth-child(6n + 1) .food-card__heading h2 { font-size: clamp(1.5rem, 2.2vw, 2rem); }
+}
+@media (min-width: 761px) and (max-width: 960px) {
+  .menu-grid .food-card:nth-child(6n + 1) { grid-column: span 2; }
+}
