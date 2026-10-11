@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap");
 
 :root {
   font-family: "Inter", Arial, sans-serif;
@@ -3542,8 +3542,6 @@ button {
    CafeServe Warm Minimalism — shared design system
    Applied as a final theme layer so existing page behaviour stays untouched.
    ========================================================================== */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap");
-
 :root {
   --bg-cream: #F7F2EA;
   --bg-card: #FFFDF9;
